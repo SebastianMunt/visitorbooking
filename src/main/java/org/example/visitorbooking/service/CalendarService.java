@@ -38,7 +38,10 @@ public class CalendarService {
                     booking.getGuestName(),
                     booking.getStartDate().toString(),
                     booking.getEndDate().plusDays(1).toString(),
-                    "#28a745"
+                    "#28a745",
+                    "Event",
+                    booking.getComment(),
+                    calculateBookingDays(booking)
             );
         }
 
@@ -47,7 +50,10 @@ public class CalendarService {
                     "Blokeret",
                     booking.getStartDate().toString(),
                     booking.getEndDate().plusDays(1).toString(),
-                    "#777777"
+                    "#777777",
+                    "Blokering",
+                    booking.getComment(),
+                    calculateBookingDays(booking)
             );
         }
 
