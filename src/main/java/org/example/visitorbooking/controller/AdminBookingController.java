@@ -75,8 +75,20 @@ public class AdminBookingController {
     }
 
     @PostMapping("/admin/delete/{id}")
-    public String deleteBooking(@PathVariable Long id) {
+    public String deleteBooking(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "top") String section
+    ) {
         bookingService.deleteBooking(id);
+
+        if (section.equals("bookings")) {
+            return "redirect:/admin#bookings-section";
+        }
+
+        if (section.equals("adminEntries")) {
+            return "redirect:/admin#admin-entries-section";
+        }
+
         return "redirect:/admin";
     }
 

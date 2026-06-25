@@ -92,7 +92,7 @@
     </form>
   </div>
 
-  <div class="card">
+  <div class="card" id="bookings-section">
     <h2>Bookinger</h2>
 
     <div class="table-wrapper">
@@ -115,15 +115,15 @@
 
         <tr th:each="booking : ${guestBookings}">
           <td th:text="${booking.guestName}"></td>
-          <td th:text="${booking.startDate}"></td>
-          <td th:text="${booking.endDate}"></td>
+          <td th:text="${#temporals.format(booking.startDate, 'dd/MM/yyyy')}"></td>
+          <td th:text="${#temporals.format(booking.endDate, 'dd/MM/yyyy')}"></td>
           <td th:text="${T(java.time.temporal.ChronoUnit).DAYS.between(booking.startDate, booking.endDate) + 1}"></td>
           <td th:text="${booking.comment}"></td>
           <td>
             <div class="table-actions">
               <a th:href="@{/admin/edit/{id}(id=${booking.id})}" class="edit-button">Rediger</a>
 
-              <form th:action="@{/admin/delete/{id}(id=${booking.id})}" method="post">
+              <form th:action="@{/admin/delete/{id}(id=${booking.id}, section='bookings')}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <button type="submit">Slet</button>
               </form>
@@ -135,7 +135,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="admin-entries-section">
     <h2>Events og blokeringer</h2>
 
     <div class="table-wrapper">
@@ -159,14 +159,14 @@
         <tr th:each="entry : ${adminEntries}">
           <td th:text="${entry.bookingType}"></td>
           <td th:text="${entry.guestName}"></td>
-          <td th:text="${entry.startDate}"></td>
-          <td th:text="${entry.endDate}"></td>
+          <td th:text="${#temporals.format(entry.startDate, 'dd/MM/yyyy')}"></td>
+          <td th:text="${#temporals.format(entry.endDate, 'dd/MM/yyyy')}"></td>
           <td th:text="${entry.comment}"></td>
           <td>
             <div class="table-actions">
               <a th:href="@{/admin/edit/{id}(id=${entry.id})}" class="edit-button">Rediger</a>
 
-              <form th:action="@{/admin/delete/{id}(id=${entry.id})}" method="post">
+              <form th:action="@{/admin/delete/{id}(id=${entry.id}, section='adminEntries')}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <button type="submit">Slet</button>
               </form>
