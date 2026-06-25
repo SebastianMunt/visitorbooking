@@ -1,11 +1,16 @@
 package org.example.visitorbooking.controller;
 
 import org.example.visitorbooking.dto.CalendarEventDto;
+import org.example.visitorbooking.dto.LeaderboardDto;
 import org.example.visitorbooking.model.Booking;
 import org.example.visitorbooking.service.BookingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -19,61 +24,112 @@ public class BookingController {
     }
 
     @GetMapping("/bookings")
-    public String showBookings(Model model) {
-        addBookingAttributes(model, new Booking());
+    public String showBookingPage(Model model) {
+        if (!model.containsAttribute("booking")) {
+            model.addAttribute("booking", new Booking());
+        }
+
         return "bookings";
     }
 
     @PostMapping("/bookings")
-    public String createBooking(@ModelAttribute Booking booking, Model model) {
+    public String createBooking(
+            @ModelAttribute Booking booking,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
         try {
             bookingService.createGuestBooking(booking);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Din booking er sendt. Jeg tjekker datoerne og vender tilbage til dig."
+            );
+
             return "redirect:/bookings";
-        } catch (IllegalArgumentException exception) {
-            addBookingAttributes(model, booking);
-            model.addAttribute("error", exception.getMessage());
+        } catch (IllegalArgumentException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            model.addAttribute("booking", booking);
             return "bookings";
         }
     }
 
     @GetMapping("/admin")
-    public String adminPage(Model model) {
-        addBookingAttributes(model, new Booking());
+    public String showAdminPage(Model model) {
+        if (!model.containsAttribute("booking")) {
+            model.addAttribute("booking", new Booking());
+        }
+
+        model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
+        model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
+
         return "admin";
     }
 
     @PostMapping("/admin/block")
-    public String blockDates(@ModelAttribute Booking booking, Model model) {
+    public String createBlockedBooking(@ModelAttribute Booking booking, Model model) {
         try {
             bookingService.createBlockedBooking(booking);
             return "redirect:/admin";
-        } catch (IllegalArgumentException exception) {
-            addBookingAttributes(model, booking);
-            model.addAttribute("error", exception.getMessage());
+        } catch (IllegalArgumentException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            model.addAttribute("booking", booking);
+            model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
+            model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
             return "admin";
         }
     }
 
-    @PostMapping("/admin/delete/{id}")
-    public String deleteBooking(@PathVariable Long id) {
-        bookingService.deleteBooking(id);
+    @PostMapping("/admin/event")
+    public String createEvent(@ModelAttribute Booking booking, Model model) {
+        try {
+            bookingService.createEventBooking(booking);
+            return "redirect:/admin";
+        } catch (IllegalArgumentException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            model.addAttribute("booking", booking);
+            model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
+            model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
+            return "admin";
+        }
+    }
+
+    @PostMapping("/admin/delete")
+    public String deleteBooking(@ModelAttribute Booking booking) {
+        bookingService.deleteBooking(booking.getId());
         return "redirect:/admin";
     }
 
     @GetMapping("/api/bookings/public")
     @ResponseBody
-    public List<CalendarEventDto> getPublicBookingsAsJson() {
+    public List<CalendarEventDto> getPublicCalendarEvents() {
         return bookingService.findPublicCalendarEvents();
     }
 
     @GetMapping("/api/bookings/admin")
     @ResponseBody
-    public List<CalendarEventDto> getAdminBookingsAsJson() {
+    public List<CalendarEventDto> getAdminCalendarEvents() {
         return bookingService.findAdminCalendarEvents();
     }
 
-    private void addBookingAttributes(Model model, Booking booking) {
-        model.addAttribute("bookings", bookingService.findAllBookings());
-        model.addAttribute("booking", booking);
+    @GetMapping("/api/bookings/leaderboard")
+    @ResponseBody
+    public List<LeaderboardDto> getLeaderboard() {
+        return bookingService.findGuestLeaderboard();
     }
+
+    @PostMapping("/admin/calendar-entry")
+    public String createAdminCalendarEntry(@ModelAttribute Booking booking, Model model) {
+        try {
+            bookingService.createAdminCalendarEntry(booking);
+            return "redirect:/admin";
+        } catch (IllegalArgumentException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            model.addAttribute("booking", booking);
+            model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
+            model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
+            return "admin";
+        }
+    }
+
 }

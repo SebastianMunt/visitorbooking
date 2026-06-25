@@ -112,24 +112,24 @@ h1::after {
 }
 
 h2 {
-    margin: 32px 0 14px;
-    font-size: clamp(1.35rem, 5vw, 2rem);
+    margin: 26px 0 12px;
+    font-size: clamp(1.25rem, 5vw, 1.85rem);
     line-height: 1.15;
     letter-spacing: -0.04em;
 }
 
 h3 {
-    margin: 22px 0 10px;
-    font-size: 1.15rem;
+    margin: 16px 0 8px;
+    font-size: 1.08rem;
 }
 
 p {
     color: var(--muted);
-    margin: 8px 0 16px;
+    margin: 8px 0 14px;
 }
 
 /* =========================
-   Cards
+   Base cards
    ========================= */
 
 form,
@@ -142,6 +142,250 @@ section,
     border: 1px solid rgba(234, 223, 206, 0.95);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow);
+}
+
+.card,
+section {
+    margin: 14px 0;
+}
+
+/* =========================
+   Hero
+   ========================= */
+
+.hero-card {
+    padding: 22px;
+    margin: 14px 0;
+    background: linear-gradient(135deg, #fff3df, #ffffff);
+}
+
+.hero-card h1 {
+    margin-top: 4px;
+}
+
+.hero-text {
+    max-width: 720px;
+    font-size: 1.02rem;
+    color: var(--muted);
+}
+
+/* =========================
+   Steps
+   ========================= */
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 14px 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.step-card {
+    padding: 16px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #f0e4d4;
+    box-shadow: var(--shadow);
+}
+
+.step-number {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.step-card h3 {
+    margin: 10px 0 5px;
+}
+
+.step-card p {
+    margin-bottom: 0;
+}
+
+/* =========================
+   Weather
+   ========================= */
+
+.weather-card {
+    padding: 16px;
+    margin: 14px 0;
+}
+
+.weather-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.eyebrow {
+    margin: 0 0 4px;
+    color: var(--primary);
+    font-size: 0.74rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.weather-header h2 {
+    margin: 0;
+}
+
+.weather-current {
+    flex: 0 0 auto;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: var(--sky);
+    color: var(--text);
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.weather-icon {
+    font-size: 1.1rem;
+}
+
+.weather-forecast {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+}
+
+.weather-day {
+    padding: 11px 7px;
+    border-radius: 17px;
+    background: #fff8ef;
+    border: 1px solid #f0e4d4;
+    text-align: center;
+}
+
+.weather-day-name {
+    font-size: 0.74rem;
+    font-weight: 900;
+    color: #8a6b4d;
+    text-transform: capitalize;
+}
+
+.weather-day-icon {
+    font-size: 1.55rem;
+    margin: 5px 0;
+}
+
+.weather-temp {
+    font-weight: 900;
+    font-size: 0.88rem;
+}
+
+.weather-rain {
+    margin-top: 3px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+/* =========================
+   Insights
+   ========================= */
+
+.booking-insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    margin: 14px 0 18px;
+}
+
+.insight-card {
+    padding: 14px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #f0e4d4;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+
+.insight-card h2 {
+    margin: 4px 0 8px;
+    font-size: 1.05rem;
+    line-height: 1.1;
+}
+
+.insight-card .eyebrow {
+    font-size: 0.68rem;
+}
+
+#next-weekend {
+    margin-bottom: 0;
+}
+
+#next-weekend strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+#next-weekend span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.25;
+}
+
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0e4d4;
+}
+
+.leaderboard-row:last-child {
+    border-bottom: 0;
+}
+
+.leaderboard-place {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    align-items: center;
+    justify-content: center;
+    background: #fff0dc;
+    color: #8a4b1f;
+    font-weight: 900;
+    font-size: 0.78rem;
+}
+
+.leaderboard-name {
+    font-weight: 900;
+    font-size: 0.85rem;
+    line-height: 1.15;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.leaderboard-count {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 800;
+    margin-top: -4px;
 }
 
 /* =========================
@@ -238,7 +482,6 @@ input[type="submit"]:active {
     transform: scale(0.985);
 }
 
-/* Delete buttons */
 form[action*="delete"] button,
 button.danger,
 .danger-button {
@@ -246,7 +489,10 @@ button.danger,
     box-shadow: 0 12px 22px rgba(229, 72, 77, 0.22);
 }
 
-/* Links */
+/* =========================
+   Links
+   ========================= */
+
 a {
     color: var(--secondary);
     font-weight: 650;
@@ -281,17 +527,42 @@ a:hover {
     border: 1px solid #bdeed6;
 }
 
+.booking-confirmation {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px;
+    margin: 16px 0;
+    border-radius: 24px;
+    background: #e7f9f0;
+    border: 1px solid #bdeed6;
+    box-shadow: var(--shadow);
+}
+
+.confirmation-icon {
+    font-size: 2rem;
+}
+
+.booking-confirmation h2 {
+    margin: 0 0 4px;
+}
+
+.booking-confirmation p {
+    margin: 0;
+    color: #0f6b43;
+    font-weight: 700;
+}
+
 /* =========================
    Calendar
    ========================= */
 
 #calendar {
     padding: 12px;
-    margin: 20px 0 24px;
+    margin: 18px 0 20px;
     overflow: hidden;
 }
 
-/* FullCalendar base */
 .fc {
     color: var(--text);
     --fc-page-bg-color: transparent;
@@ -300,7 +571,6 @@ a:hover {
     --fc-neutral-bg-color: #fff8ef;
 }
 
-/* Calendar toolbar mobile-first */
 .fc .fc-toolbar {
     display: grid;
     grid-template-columns: 1fr;
@@ -344,7 +614,6 @@ a:hover {
     color: #ffffff !important;
 }
 
-/* Calendar cells */
 .fc-theme-standard td,
 .fc-theme-standard th {
     border-color: #eee0ce;
@@ -372,6 +641,14 @@ a:hover {
     background: #fff9f0;
 }
 
+.fc-daygrid-day.heat-medium {
+    background: #fff4e1 !important;
+}
+
+.fc-daygrid-day.heat-high {
+    background: #ffe0b2 !important;
+}
+
 .fc .fc-daygrid-day-number {
     padding: 7px;
     font-size: 0.88rem;
@@ -383,7 +660,6 @@ a:hover {
     color: #c8b9a3;
 }
 
-/* Events */
 .fc .fc-event {
     border: none !important;
     border-radius: 999px !important;
@@ -406,9 +682,64 @@ a:hover {
     background: rgba(47, 128, 237, 0.14) !important;
 }
 
-/* Make calendar less cramped on small phones */
 .fc .fc-daygrid-day-frame {
     min-height: 72px;
+}
+
+/* =========================
+   Calendar legend
+   ========================= */
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--muted);
+}
+
+.calendar-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.legend-red {
+    background: #d9534f;
+}
+
+.legend-grey {
+    background: #777777;
+}
+
+.legend-green {
+    background: #28a745;
+}
+
+.legend-heat {
+    background: #ffd59e;
+}
+
+/* =========================
+   Trip preview
+   ========================= */
+
+.trip-preview {
+    margin-top: 10px;
+    padding: 11px 13px;
+    border-radius: 14px;
+    background: #fff3df;
+    color: #8a4b1f;
+    font-weight: 800;
 }
 
 /* =========================
@@ -507,7 +838,7 @@ td button {
 }
 
 /* =========================
-   Desktop/admin improvements
+   Desktop improvements
    ========================= */
 
 @media (min-width: 760px) {
@@ -524,6 +855,22 @@ td button {
 
     .nav-title {
         font-size: 1.25rem;
+    }
+
+    .hero-card {
+        padding: 34px;
+    }
+
+    .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .weather-card {
+        padding: 24px;
+    }
+
+    .weather-forecast {
+        grid-template-columns: repeat(6, 1fr);
     }
 
     form {
@@ -595,8 +942,41 @@ td button {
         font-size: 2rem;
     }
 
+    h2 {
+        font-size: 1.15rem;
+    }
+
     form {
         padding: 15px;
+    }
+
+    .weather-header {
+        gap: 8px;
+    }
+
+    .weather-current {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .booking-insights {
+        gap: 8px;
+    }
+
+    .insight-card {
+        padding: 12px;
+    }
+
+    .insight-card h2 {
+        font-size: 0.95rem;
+    }
+
+    .leaderboard-name {
+        font-size: 0.78rem;
+    }
+
+    .leaderboard-count {
+        font-size: 0.68rem;
     }
 
     #calendar {
@@ -619,94 +999,5 @@ td button {
     .fc .fc-event {
         font-size: 0.66rem;
         padding: 1px 5px;
-    }
-}
-.weather-card {
-    padding: 18px;
-    margin: 18px 0 24px;
-}
-
-.weather-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    align-items: flex-start;
-    margin-bottom: 16px;
-}
-
-.eyebrow {
-    margin: 0 0 4px;
-    color: var(--primary);
-    font-size: 0.78rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-.weather-header h2 {
-    margin: 0;
-}
-
-.weather-current {
-    flex: 0 0 auto;
-    padding: 10px 13px;
-    border-radius: 999px;
-    background: var(--sky);
-    color: var(--text);
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.weather-icon {
-    font-size: 1.1rem;
-}
-
-.weather-forecast {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.weather-day {
-    padding: 12px 8px;
-    border-radius: 18px;
-    background: #fff8ef;
-    border: 1px solid #f0e4d4;
-    text-align: center;
-}
-
-.weather-day-name {
-    font-size: 0.78rem;
-    font-weight: 900;
-    color: #8a6b4d;
-    text-transform: capitalize;
-}
-
-.weather-day-icon {
-    font-size: 1.7rem;
-    margin: 6px 0;
-}
-
-.weather-temp {
-    font-weight: 900;
-    font-size: 0.95rem;
-}
-
-.weather-rain {
-    margin-top: 3px;
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-weight: 700;
-}
-
-@media (min-width: 760px) {
-    .weather-card {
-        padding: 24px;
-    }
-
-    .weather-forecast {
-        grid-template-columns: repeat(6, 1fr);
     }
 }

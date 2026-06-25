@@ -2,7 +2,9 @@
 <html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Book besøg</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Book besøg hos Sebastian</title>
 
   <link rel="stylesheet" href="/css/style.css">
 
@@ -13,61 +15,158 @@
 
 <div class="page-container">
 
-  <div class="card">
-    <h1>Book besøg</h1>
+  <section class="hero-card">
+    <p class="eyebrow">Barcelona visitor booking</p>
 
-    <section class="weather-card">
-      <div class="weather-header">
-        <div>
-          <p class="eyebrow">Sommerstatus</p>
-          <h2>Vejret i Barcelona</h2>
-        </div>
-        <div id="weather-current" class="weather-current">
-          Henter vejr...
-        </div>
-      </div>
+    <h1>Book dit besøg hos Sebastian</h1>
 
-      <div id="weather-forecast" class="weather-forecast"></div>
-    </section>
-
-    <p>
-      Vælg datoer i kalenderen og udfyld dit navn.
-      Røde perioder er allerede booket, og grå perioder er blokeret.
+    <p class="hero-text">
+      Vælg dine datoer i kalenderen, send en booking, og så vender jeg tilbage.
+      Bookingen er først endelig, når jeg har bekræftet den.
     </p>
 
-    <p th:if="${error}" th:text="${error}" class="error"></p>
+  </section>
+
+  <section class="steps-grid">
+    <div class="step-card">
+      <span class="step-number">1</span>
+      <h3>Vælg datoer</h3>
+      <p>
+        Tryk på kalenderen. På mobil vælger du startdato og slutdato med to tryk.
+      </p>
+    </div>
+
+    <div class="step-card">
+      <span class="step-number">2</span>
+      <h3>Skriv dit navn</h3>
+      <p>
+        Tilføj gerne en kommentar, fx flytider, hvem du kommer med eller hvad planen er.
+      </p>
+    </div>
+
+    <div class="step-card">
+      <span class="step-number">3</span>
+      <h3>Send booking</h3>
+      <p>
+        Vi ser bookingen og bekræfter datoerne med jer bagefter.
+      </p>
+    </div>
+  </section>
+
+  <section class="weather-card">
+    <div class="weather-header">
+      <div>
+        <p class="eyebrow">Sommerstatus</p>
+        <h2>Vejret i Barcelona</h2>
+      </div>
+
+      <div id="weather-current" class="weather-current">
+        Henter vejr...
+      </div>
+    </div>
+
+    <div id="weather-forecast" class="weather-forecast"></div>
+  </section>
+
+  <section class="booking-insights">
+    <div class="insight-card">
+      <p class="eyebrow">Næste mulighed</p>
+      <h2>Næste ledige weekend</h2>
+      <p id="next-weekend">Finder næste ledige weekend...</p>
+    </div>
+
+    <div class="insight-card">
+      <p class="eyebrow">Leaderboard</p>
+      <h2>Guest leaderboard</h2>
+      <div id="guest-leaderboard">Henter leaderboard...</div>
+    </div>
+  </section>
+
+  <div th:if="${successMessage}" class="booking-confirmation">
+    <div class="confirmation-icon">🎉</div>
+
+    <div>
+      <h2>Booking sendt</h2>
+      <p th:text="${successMessage}"></p>
+    </div>
   </div>
 
-  <div class="card">
+  <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+  <section class="card">
     <h2>Kalender</h2>
-    <div id="calendar" data-api-url="/api/bookings/public"></div>
-  </div>
 
-  <div class="card">
+    <p>
+      Vælg en ledig periode i kalenderen. Røde perioder er allerede booket,
+      grå perioder er blokeret, og grønne perioder er events.
+    </p>
+
+    <div class="calendar-legend">
+      <span><span class="legend-dot legend-red"></span> Optaget</span>
+      <span><span class="legend-dot legend-grey"></span> Blokeret</span>
+      <span><span class="legend-dot legend-green"></span> Event</span>
+      <span><span class="legend-dot legend-heat"></span> Populær periode</span>
+    </div>
+
+    <div id="calendar" data-api-url="/api/bookings/public"></div>
+  </section>
+
+  <section class="card">
     <h2>Opret booking</h2>
 
-    <form action="/bookings" method="post" th:object="${booking}">
+    <p>
+      Udfyld formularen, når du har valgt datoer. På mobil kan du trykke én gang
+      på ankomstdato og én gang på afrejsedato.
+    </p>
 
+    <form action="/bookings" method="post" th:object="${booking}">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-      <label>Navn:</label><br>
-      <input type="text" th:field="*{guestName}" required><br><br>
+      <label for="guestName">Navn</label>
+      <input
+              id="guestName"
+              type="text"
+              th:field="*{guestName}"
+              placeholder="Skriv dit navn"
+              required
+      >
 
-      <label>Ankomstdato:</label><br>
-      <input type="date" th:field="*{startDate}" required><br><br>
+      <label for="startDate">Ankomstdato</label>
+      <input
+              id="startDate"
+              type="date"
+              th:field="*{startDate}"
+              required
+      >
 
-      <label>Afrejsedato:</label><br>
-      <input type="date" th:field="*{endDate}" required><br><br>
+      <label for="endDate">Afrejsedato</label>
+      <input
+              id="endDate"
+              type="date"
+              th:field="*{endDate}"
+              required
+      >
 
-      <label>Kommentar:</label><br>
-      <textarea th:field="*{comment}" placeholder="Fx hvem du kommer med, cirka ankomsttid eller andet"></textarea><br><br>
+      <p id="trip-preview" class="trip-preview">Vælg datoer i kalenderen.</p>
+
+      <label for="comment">Kommentar</label>
+      <textarea
+              id="comment"
+              th:field="*{comment}"
+              placeholder="Fx hvem du kommer med, cirka ankomsttid eller andet"
+      ></textarea>
 
       <button type="submit">Book besøg</button>
-
     </form>
-  </div>
+  </section>
 
-  <a href="/">Tilbage til forsiden</a>
+  <section class="card">
+    <h2>Links</h2>
+
+    <div class="actions">
+      <a href="/" class="button">Tilbage til forsiden</a>
+    </div>
+  </section>
 
 </div>
 

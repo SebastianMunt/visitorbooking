@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const calendarElement = document.getElementById("calendar");
 
     if (!calendarElement) {
+        loadWeather();
         return;
     }
 
@@ -20,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
         selectMirror: true,
         unselectAuto: false,
 
-        // Gør touch-selection lidt bedre på mobil
         longPressDelay: 250,
         selectLongPressDelay: 250,
 
@@ -31,15 +31,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const clickedDate = info.dateStr;
 
-            // På mobil/tablet: første tryk vælger start, andet tryk vælger slut
             if (isTouchDevice()) {
                 handleMobileDateClick(clickedDate);
                 return;
             }
 
-            // På computer: klik på én dag vælger samme start og slut
             startDateInput.value = clickedDate;
             endDateInput.value = clickedDate;
+
+            updateTripPreview();
         },
 
         select: function (info) {
@@ -47,28 +47,44 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Drag-selection på computer
             startDateInput.value = info.startStr;
             endDateInput.value = subtractOneDay(info.endStr);
 
             mobileStartDate = null;
+            updateTripPreview();
         },
 
         events: function (fetchInfo, successCallback, failureCallback) {
             fetch(calendarApiUrl)
                 .then(response => response.json())
-                .then(events => successCallback(events))
+                .then(events => {
+                    successCallback(events);
+
+                    setTimeout(function () {
+                        renderNextAvailableWeekend(events);
+                        renderCalendarHeatmap(events);
+                    }, 100);
+                })
                 .catch(error => failureCallback(error));
         }
     });
 
     calendar.render();
 
+    loadWeather();
+    loadLeaderboard();
+
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener("change", updateTripPreview);
+        endDateInput.addEventListener("change", updateTripPreview);
+    }
+
     function handleMobileDateClick(clickedDate) {
         if (mobileStartDate === null) {
             mobileStartDate = clickedDate;
             startDateInput.value = clickedDate;
             endDateInput.value = clickedDate;
+            updateTripPreview();
             return;
         }
 
@@ -81,6 +97,169 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         mobileStartDate = null;
+        updateTripPreview();
+    }
+
+    function renderNextAvailableWeekend(events) {
+        const element = document.getElementById("next-weekend");
+
+        if (!element) {
+            return;
+        }
+
+        const occupiedDates = buildOccupiedDateSet(events);
+        const today = new Date();
+
+        for (let i = 0; i < 365; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+
+            if (date.getDay() !== 6) {
+                continue;
+            }
+
+            const saturday = formatDate(date);
+
+            const sundayDate = new Date(date);
+            sundayDate.setDate(date.getDate() + 1);
+
+            const sunday = formatDate(sundayDate);
+
+            if (!occupiedDates.has(saturday) && !occupiedDates.has(sunday)) {
+                element.innerHTML = `
+                    <strong>${formatPrettyDate(saturday)} til ${formatPrettyDate(sunday)}</strong>
+                    <span>Næste weekend der ser helt ledig ud.</span>
+                `;
+                return;
+            }
+        }
+
+        element.textContent = "Jeg kunne ikke finde en ledig weekend lige nu.";
+    }
+
+    function renderCalendarHeatmap(events) {
+        const dateCounts = {};
+
+        events.forEach(event => {
+            if (isEventOnly(event)) {
+                return;
+            }
+
+            const dates = getDatesInEventRange(event);
+
+            dates.forEach(date => {
+                dateCounts[date] = (dateCounts[date] || 0) + 1;
+            });
+        });
+
+        document.querySelectorAll(".fc-daygrid-day").forEach(dayElement => {
+            dayElement.classList.remove("heat-low", "heat-medium", "heat-high");
+
+            const date = dayElement.dataset.date;
+            const count = dateCounts[date] || 0;
+
+            if (count >= 2) {
+                dayElement.classList.add("heat-high");
+            } else if (count === 1) {
+                dayElement.classList.add("heat-medium");
+            }
+        });
+    }
+
+    function loadLeaderboard() {
+        const element = document.getElementById("guest-leaderboard");
+
+        if (!element) {
+            return;
+        }
+
+        fetch("/api/bookings/leaderboard")
+            .then(response => response.json())
+            .then(leaderboard => {
+                if (!leaderboard || leaderboard.length === 0) {
+                    element.innerHTML = `<p>Ingen gæster på leaderboard endnu.</p>`;
+                    return;
+                }
+
+                element.innerHTML = leaderboard
+                    .map((guest, index) => {
+                        const bookingText = guest.visitCount === 1 ? "booking" : "bookinger";
+
+                        return `
+                            <div class="leaderboard-row">
+                                <span class="leaderboard-place">${index + 1}</span>
+                                <span class="leaderboard-name">${guest.guestName}</span>
+                                <span class="leaderboard-count">${guest.visitCount} ${bookingText}</span>
+                            </div>
+                        `;
+                    })
+                    .join("");
+            })
+            .catch(() => {
+                element.textContent = "Kunne ikke hente leaderboard.";
+            });
+    }
+
+    function buildOccupiedDateSet(events) {
+        const occupiedDates = new Set();
+
+        events.forEach(event => {
+            if (isEventOnly(event)) {
+                return;
+            }
+
+            getDatesInEventRange(event).forEach(date => occupiedDates.add(date));
+        });
+
+        return occupiedDates;
+    }
+
+    function getDatesInEventRange(event) {
+        const dates = [];
+
+        if (!event.start) {
+            return dates;
+        }
+
+        const start = parseDate(event.start);
+        const endExclusive = event.end ? parseDate(event.end) : addDays(start, 1);
+
+        const current = new Date(start);
+
+        while (current < endExclusive) {
+            dates.push(formatDate(current));
+            current.setDate(current.getDate() + 1);
+        }
+
+        return dates;
+    }
+
+    function isEventOnly(event) {
+        return event.color === "#28a745";
+    }
+
+    function updateTripPreview() {
+        const preview = document.getElementById("trip-preview");
+
+        if (!preview || !startDateInput || !endDateInput) {
+            return;
+        }
+
+        if (!startDateInput.value || !endDateInput.value) {
+            preview.textContent = "Vælg datoer i kalenderen.";
+            return;
+        }
+
+        const start = parseDate(startDateInput.value);
+        const end = parseDate(endDateInput.value);
+        const days = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (days <= 0) {
+            preview.textContent = "Slutdato skal være efter startdato.";
+            return;
+        }
+
+        preview.textContent = `${days} dag${days > 1 ? "e" : ""} valgt.`;
     }
 
     function isTouchDevice() {
@@ -88,11 +267,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function subtractOneDay(dateString) {
-        const parts = dateString.split("-");
-        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+        const date = parseDate(dateString);
         date.setDate(date.getDate() - 1);
 
         return formatDate(date);
+    }
+
+    function parseDate(dateString) {
+        const parts = dateString.split("-");
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
+    function addDays(date, days) {
+        const copy = new Date(date);
+        copy.setDate(copy.getDate() + days);
+
+        return copy;
     }
 
     function formatDate(date) {
@@ -102,9 +292,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return `${year}-${month}-${day}`;
     }
-});
 
-loadWeather();
+    function formatPrettyDate(dateString) {
+        const date = parseDate(dateString);
+
+        return date.toLocaleDateString("da-DK", {
+            day: "numeric",
+            month: "short"
+        });
+    }
+});
 
 function loadWeather() {
     const currentElement = document.getElementById("weather-current");
