@@ -1,76 +1,64 @@
 /* =========================
-   Visitorbooking - Dark Apple Glass UI
+   Visitorbooking - Summer Booking UI
+   Mobile-first design
    ========================= */
 
 :root {
-    --bg: #05070d;
-    --bg-soft: #0b1020;
-    --glass: rgba(255, 255, 255, 0.08);
-    --glass-strong: rgba(255, 255, 255, 0.13);
-    --glass-border: rgba(255, 255, 255, 0.18);
-    --text: #f5f7fb;
-    --text-muted: #aab3c5;
-    --accent: #7c5cff;
-    --accent-2: #00d4ff;
-    --danger: #ff4d6d;
-    --success: #42f5b3;
-    --warning: #ffd166;
-    --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
-    --radius-lg: 28px;
-    --radius-md: 18px;
+    --bg: #fff8ef;
+    --bg-soft: #ffffff;
+    --primary: #ff7a3d;
+    --primary-dark: #e85f25;
+    --secondary: #2f80ed;
+    --sand: #ffe8c7;
+    --mint: #dff7ed;
+    --sky: #e7f3ff;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --border: #eadfce;
+    --danger: #e5484d;
+    --success: #1f9d63;
+    --shadow: 0 14px 34px rgba(75, 53, 33, 0.12);
+    --radius-lg: 24px;
+    --radius-md: 16px;
     --radius-sm: 12px;
 }
 
-/* Reset */
 * {
     box-sizing: border-box;
 }
 
 html {
-    min-height: 100%;
     background: var(--bg);
 }
 
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text);
     background:
-            radial-gradient(circle at top left, rgba(124, 92, 255, 0.42), transparent 36%),
-            radial-gradient(circle at 80% 10%, rgba(0, 212, 255, 0.24), transparent 32%),
-            radial-gradient(circle at 50% 100%, rgba(255, 77, 109, 0.18), transparent 35%),
-            linear-gradient(145deg, #05070d 0%, #090d18 48%, #03040a 100%);
-    background-attachment: fixed;
+            radial-gradient(circle at 10% 0%, rgba(255, 183, 77, 0.32), transparent 28%),
+            radial-gradient(circle at 90% 10%, rgba(47, 128, 237, 0.16), transparent 26%),
+            linear-gradient(180deg, #fff8ef 0%, #fffdf8 42%, #ffffff 100%);
     line-height: 1.5;
-    overflow-x: hidden;
 }
 
-/* Soft noise/glow layer */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent 70%);
-    z-index: -1;
-}
+/* =========================
+   Main layout
+   ========================= */
 
-/* Layout */
 .page-container,
 .container,
 main {
-    width: min(1180px, calc(100% - 32px));
+    width: min(100% - 24px, 1040px);
     margin: 0 auto;
-    padding: 32px 0 56px;
+    padding: 18px 0 44px;
 }
 
-/* Navbar */
+/* =========================
+   Navbar
+   ========================= */
+
 .navbar {
     position: sticky;
     top: 0;
@@ -78,187 +66,190 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 18px max(16px, calc((100vw - 1180px) / 2));
-    background: rgba(5, 7, 13, 0.64);
-    border-bottom: 1px solid rgba(255,255,255,0.09);
-    backdrop-filter: blur(22px) saturate(160%);
-    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    gap: 12px;
+    padding: 14px 12px;
+    background: rgba(255, 248, 239, 0.92);
+    border-bottom: 1px solid rgba(234, 223, 206, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 .nav-title {
-    font-size: clamp(1.05rem, 2vw, 1.35rem);
-    font-weight: 760;
-    letter-spacing: -0.035em;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
     color: var(--text);
 }
 
 .nav-logo {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     object-fit: contain;
-    border-radius: 14px;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.35));
+    border-radius: 12px;
 }
 
-/* Headings */
+/* =========================
+   Typography
+   ========================= */
+
 h1 {
-    margin: 18px 0 10px;
-    font-size: clamp(2.15rem, 5vw, 4.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.075em;
-    font-weight: 850;
-    max-width: 850px;
-    background: linear-gradient(135deg, #ffffff 0%, #c8d3ff 44%, #8fefff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    margin: 18px 0 8px;
+    font-size: clamp(2rem, 9vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 900;
+    color: var(--text);
+}
+
+h1::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 5px;
+    margin-top: 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), #ffc857);
 }
 
 h2 {
-    margin: 34px 0 16px;
-    font-size: clamp(1.35rem, 2.5vw, 2rem);
-    letter-spacing: -0.045em;
+    margin: 32px 0 14px;
+    font-size: clamp(1.35rem, 5vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
 }
 
 h3 {
-    margin: 24px 0 12px;
-    font-size: 1.2rem;
-    letter-spacing: -0.025em;
+    margin: 22px 0 10px;
+    font-size: 1.15rem;
 }
 
 p {
-    color: var(--text-muted);
+    color: var(--muted);
+    margin: 8px 0 16px;
 }
 
-/* Glass cards */
+/* =========================
+   Cards
+   ========================= */
+
 form,
 #calendar,
 .table-wrapper,
 section,
 .card,
 .booking-card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055));
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow);
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(234, 223, 206, 0.95);
     border-radius: var(--radius-lg);
-    backdrop-filter: blur(24px) saturate(170%);
-    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    box-shadow: var(--shadow);
 }
 
-/* Forms */
+/* =========================
+   Forms
+   ========================= */
+
 form {
-    padding: 24px;
-    margin: 20px 0;
+    padding: 18px;
+    margin: 18px 0;
 }
 
 form label {
     display: block;
-    margin: 14px 0 8px;
-    color: rgba(245, 247, 251, 0.86);
-    font-weight: 650;
-    letter-spacing: -0.02em;
+    margin: 14px 0 7px;
+    font-weight: 750;
+    color: var(--text);
+    letter-spacing: -0.015em;
 }
 
 input,
 textarea,
 select {
     width: 100%;
-    padding: 14px 15px;
+    min-height: 48px;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    border: 1px solid rgba(255,255,255,0.16);
-    outline: none;
-    background: rgba(255,255,255,0.075);
+    background: #fffdf9;
     color: var(--text);
     font: inherit;
-    transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: rgba(170, 179, 197, 0.72);
-}
-
-textarea {
-    min-height: 110px;
-    resize: vertical;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: rgba(0, 212, 255, 0.74);
-    background: rgba(255,255,255,0.105);
-    box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.12);
+    border-color: rgba(255, 122, 61, 0.9);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(255, 122, 61, 0.16);
 }
 
-/* Autofill fix */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-    -webkit-text-fill-color: var(--text);
-    transition: background-color 9999s ease-in-out 0s;
-    box-shadow: 0 0 0 1000px rgba(255,255,255,0.08) inset;
+textarea {
+    min-height: 108px;
+    resize: vertical;
 }
 
-/* Buttons */
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+
 button,
 .button,
 a.button,
 input[type="submit"] {
     appearance: none;
-    border: 0;
+    width: 100%;
+    min-height: 50px;
+    border: none;
+    border-radius: 999px;
+    padding: 13px 18px;
     cursor: pointer;
     display: inline-flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 13px 18px;
-    min-height: 46px;
-    border-radius: 999px;
-    color: white;
-    font-weight: 750;
-    letter-spacing: -0.02em;
+    align-items: center;
     text-decoration: none;
-    background:
-            linear-gradient(135deg, rgba(124,92,255,1), rgba(0,212,255,0.95));
-    box-shadow:
-            0 16px 36px rgba(0, 212, 255, 0.14),
-            0 12px 28px rgba(124, 92, 255, 0.22),
-            inset 0 1px 0 rgba(255,255,255,0.25);
-    transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+    font: inherit;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--primary), #ff9f43);
+    box-shadow: 0 12px 22px rgba(255, 122, 61, 0.28);
+    transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
 }
 
 button:hover,
 .button:hover,
 a.button:hover,
 input[type="submit"]:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.08);
-    box-shadow:
-            0 20px 42px rgba(0, 212, 255, 0.18),
-            0 16px 36px rgba(124, 92, 255, 0.28),
-            inset 0 1px 0 rgba(255,255,255,0.28);
+    filter: brightness(1.03);
+    box-shadow: 0 15px 28px rgba(255, 122, 61, 0.34);
 }
 
 button:active,
 .button:active,
 a.button:active,
 input[type="submit"]:active {
-    transform: translateY(1px) scale(0.99);
+    transform: scale(0.985);
 }
 
-/* Delete/danger buttons */
+/* Delete buttons */
 form[action*="delete"] button,
 button.danger,
 .danger-button {
-    background: linear-gradient(135deg, #ff4d6d, #ff8a5c);
-    box-shadow: 0 14px 34px rgba(255,77,109,0.22);
+    background: linear-gradient(135deg, #e5484d, #ff7a7a);
+    box-shadow: 0 12px 22px rgba(229, 72, 77, 0.22);
 }
 
 /* Links */
 a {
-    color: #8fefff;
+    color: var(--secondary);
+    font-weight: 650;
     text-decoration: none;
 }
 
@@ -266,178 +257,198 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Feedback messages */
+/* =========================
+   Feedback
+   ========================= */
+
 .error,
 .success {
-    padding: 14px 16px;
+    padding: 13px 14px;
     border-radius: var(--radius-md);
     margin: 16px 0;
-    font-weight: 650;
-    border: 1px solid rgba(255,255,255,0.15);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    font-weight: 700;
 }
 
 .error {
-    color: #ffd7df;
-    background: rgba(255, 77, 109, 0.14);
-    border-color: rgba(255, 77, 109, 0.28);
+    color: #8f1f24;
+    background: #ffe8e9;
+    border: 1px solid #ffc9cc;
 }
 
 .success {
-    color: #d9fff1;
-    background: rgba(66, 245, 179, 0.13);
-    border-color: rgba(66, 245, 179, 0.28);
+    color: #0f6b43;
+    background: #e7f9f0;
+    border: 1px solid #bdeed6;
 }
 
-/* Calendar */
+/* =========================
+   Calendar
+   ========================= */
+
 #calendar {
-    padding: 18px;
-    margin: 28px 0;
+    padding: 12px;
+    margin: 20px 0 24px;
     overflow: hidden;
 }
 
-/* FullCalendar dark styling */
+/* FullCalendar base */
 .fc {
     color: var(--text);
-    --fc-border-color: rgba(255,255,255,0.12);
     --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: rgba(255,255,255,0.06);
-    --fc-list-event-hover-bg-color: rgba(255,255,255,0.08);
-    --fc-today-bg-color: rgba(124,92,255,0.16);
-    --fc-now-indicator-color: var(--accent-2);
+    --fc-border-color: #eee0ce;
+    --fc-today-bg-color: rgba(255, 122, 61, 0.14);
+    --fc-neutral-bg-color: #fff8ef;
 }
 
+/* Calendar toolbar mobile-first */
 .fc .fc-toolbar {
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 18px;
+    gap: 8px;
 }
 
 .fc .fc-toolbar-title {
-    font-size: clamp(1.25rem, 3vw, 2rem);
-    font-weight: 820;
-    letter-spacing: -0.055em;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    color: var(--text);
 }
 
 .fc .fc-button {
-    border: 1px solid rgba(255,255,255,0.14) !important;
+    border: none !important;
     border-radius: 999px !important;
-    background: rgba(255,255,255,0.09) !important;
-    color: var(--text) !important;
-    box-shadow: none !important;
-    font-weight: 700 !important;
+    background: #fff0dc !important;
+    color: #8a4b1f !important;
+    font-weight: 800 !important;
     padding: 9px 12px !important;
+    box-shadow: none !important;
     text-transform: capitalize !important;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
 }
 
 .fc .fc-button:hover {
-    background: rgba(255,255,255,0.16) !important;
-    transform: translateY(-1px);
+    background: #ffe3ba !important;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-    background: linear-gradient(135deg, rgba(124,92,255,0.95), rgba(0,212,255,0.85)) !important;
-    border-color: rgba(255,255,255,0.22) !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
 }
 
+/* Calendar cells */
 .fc-theme-standard td,
 .fc-theme-standard th {
-    border-color: rgba(255,255,255,0.1);
+    border-color: #eee0ce;
 }
 
 .fc .fc-col-header-cell {
-    background: rgba(255,255,255,0.055);
+    background: #fff8ef;
 }
 
 .fc .fc-col-header-cell-cushion {
     display: inline-block;
-    padding: 12px 4px;
-    color: rgba(245,247,251,0.82);
-    font-weight: 800;
-    font-size: 0.78rem;
+    padding: 9px 2px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    color: #8a6b4d;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
 }
 
 .fc .fc-daygrid-day {
-    background: rgba(255,255,255,0.018);
-    transition: background 160ms ease;
+    background: #ffffff;
 }
 
 .fc .fc-daygrid-day:hover {
-    background: rgba(255,255,255,0.07);
+    background: #fff9f0;
 }
 
 .fc .fc-daygrid-day-number {
-    color: rgba(245,247,251,0.9);
-    padding: 10px;
-    font-weight: 720;
+    padding: 7px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--text);
 }
 
 .fc .fc-day-other .fc-daygrid-day-number {
-    color: rgba(170,179,197,0.38);
+    color: #c8b9a3;
 }
 
+/* Events */
 .fc .fc-event {
-    border: 0 !important;
-    border-radius: 10px !important;
-    padding: 3px 6px;
-    font-weight: 750;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.22);
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 2px 6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    box-shadow: 0 5px 12px rgba(75, 53, 33, 0.14);
 }
 
 .fc .fc-daygrid-event {
-    margin: 2px 6px;
+    margin: 1px 2px;
 }
 
 .fc .fc-event-title,
 .fc .fc-event-time {
-    color: white;
+    color: #ffffff;
 }
 
 .fc .fc-highlight {
-    background: rgba(0, 212, 255, 0.17) !important;
+    background: rgba(47, 128, 237, 0.14) !important;
 }
 
-/* Tables */
+/* Make calendar less cramped on small phones */
+.fc .fc-daygrid-day-frame {
+    min-height: 72px;
+}
+
+/* =========================
+   Tables - mostly admin
+   ========================= */
+
 .table-wrapper {
-    padding: 12px;
+    padding: 8px;
     overflow-x: auto;
-    margin: 22px 0;
+    margin: 18px 0;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    background: #ffffff;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
 thead {
-    background: rgba(255,255,255,0.07);
+    background: #fff3df;
 }
 
 th,
 td {
-    padding: 14px 12px;
+    padding: 12px 10px;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.09);
-    color: rgba(245,247,251,0.9);
+    border-bottom: 1px solid #f0e4d4;
+    color: var(--text);
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 th {
-    color: rgba(245,247,251,0.72);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 850;
-}
-
-tr:hover td {
-    background: rgba(255,255,255,0.045);
+    letter-spacing: 0.06em;
+    color: #8a6b4d;
+    font-weight: 900;
 }
 
 td form {
@@ -446,19 +457,26 @@ td form {
     background: transparent;
     border: 0;
     box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
 }
 
-/* Small utility groups */
+td button {
+    width: auto;
+    min-height: 38px;
+    padding: 8px 13px;
+    font-size: 0.82rem;
+}
+
+/* =========================
+   Action groups
+   ========================= */
+
 .business-actions,
 .admin-actions,
 .actions {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin: 18px 0;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
 }
 
 .logout-form {
@@ -467,19 +485,20 @@ td form {
     background: transparent;
     border: 0;
     box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
 }
 
-/* Login/setup pages */
+/* =========================
+   Login/setup
+   ========================= */
+
 .login-container,
 .setup-container {
-    min-height: calc(100vh - 86px);
+    min-height: calc(100vh - 72px);
     display: grid;
     place-items: center;
-    width: min(520px, calc(100% - 32px));
+    width: min(100% - 24px, 460px);
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 26px 0;
 }
 
 .login-container form,
@@ -487,128 +506,118 @@ td form {
     width: 100%;
 }
 
-/* Mobile */
-@media (max-width: 760px) {
+/* =========================
+   Desktop/admin improvements
+   ========================= */
+
+@media (min-width: 760px) {
     .page-container,
     .container,
     main {
-        width: min(100% - 22px, 1180px);
-        padding: 22px 0 40px;
+        width: min(100% - 48px, 1040px);
+        padding: 34px 0 64px;
     }
 
     .navbar {
-        padding: 14px 12px;
+        padding: 16px max(24px, calc((100vw - 1040px) / 2));
     }
 
-    .nav-logo {
-        width: 38px;
-        height: 38px;
-    }
-
-    h1 {
-        margin-top: 10px;
-        font-size: clamp(2rem, 13vw, 3.2rem);
-    }
-
-    form,
-    #calendar,
-    .table-wrapper,
-    section,
-    .card,
-    .booking-card {
-        border-radius: 22px;
+    .nav-title {
+        font-size: 1.25rem;
     }
 
     form {
-        padding: 18px;
-    }
-
-    input,
-    textarea,
-    select {
-        font-size: 16px;
-        padding: 13px 14px;
+        padding: 24px;
     }
 
     button,
     .button,
     a.button,
     input[type="submit"] {
-        width: 100%;
-        min-height: 48px;
+        width: auto;
+        min-width: 150px;
     }
 
     .business-actions,
     .admin-actions,
     .actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
     #calendar {
-        padding: 10px;
+        padding: 20px;
     }
 
     .fc .fc-toolbar {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-        text-align: center;
-    }
-
-    .fc .fc-toolbar-chunk {
         display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 8px;
+        justify-content: space-between;
+        text-align: left;
     }
 
     .fc .fc-toolbar-title {
-        font-size: 1.35rem;
-    }
-
-    .fc .fc-button {
-        font-size: 0.82rem !important;
-        padding: 8px 10px !important;
+        font-size: 1.8rem;
     }
 
     .fc .fc-col-header-cell-cushion {
-        font-size: 0.68rem;
-        padding: 9px 2px;
+        font-size: 0.78rem;
+        padding: 12px 4px;
+    }
+
+    .fc .fc-daygrid-day-frame {
+        min-height: 104px;
     }
 
     .fc .fc-daygrid-day-number {
-        padding: 7px;
-        font-size: 0.85rem;
+        padding: 10px;
+        font-size: 0.95rem;
     }
 
-    .fc .fc-daygrid-event {
-        margin: 1px 2px;
-        font-size: 0.7rem;
-        padding: 2px 4px;
-    }
-
-    th,
-    td {
-        padding: 11px 10px;
-        font-size: 0.88rem;
-        white-space: nowrap;
+    .fc .fc-event {
+        font-size: 0.78rem;
+        padding: 3px 7px;
     }
 }
 
-/* Very small phones */
-@media (max-width: 420px) {
-    .fc .fc-daygrid-day-frame {
-        min-height: 68px;
-    }
+/* =========================
+   Extra small phones
+   ========================= */
 
-    .fc .fc-event-title {
-        max-width: 54px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+@media (max-width: 380px) {
+    .page-container,
+    .container,
+    main {
+        width: min(100% - 18px, 1040px);
     }
 
     h1 {
-        letter-spacing: -0.065em;
+        font-size: 2rem;
+    }
+
+    form {
+        padding: 15px;
+    }
+
+    #calendar {
+        padding: 8px;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.18rem;
+    }
+
+    .fc .fc-button {
+        font-size: 0.78rem !important;
+        padding: 8px 10px !important;
+    }
+
+    .fc .fc-daygrid-day-frame {
+        min-height: 64px;
+    }
+
+    .fc .fc-event {
+        font-size: 0.66rem;
+        padding: 1px 5px;
     }
 }
