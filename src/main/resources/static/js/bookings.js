@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const calendarElement = document.getElementById("calendar");
+    setupBookingSuccessPopup();
 
     if (!calendarElement) {
         loadWeather();
@@ -546,6 +547,23 @@ document.addEventListener("DOMContentLoaded", function () {
             month: "short"
         });
     }
+
+    function setupBookingSuccessPopup() {
+        const popup = document.getElementById("booking-success-popup");
+
+        if (!popup) {
+            return;
+        }
+
+        popup.addEventListener("click", function () {
+            popup.classList.add("is-hidden");
+
+            setTimeout(function () {
+                popup.remove();
+            }, 200);
+        });
+    }
+
 });
 
 function loadWeather() {

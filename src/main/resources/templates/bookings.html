@@ -31,8 +31,8 @@
     <h1>Book dit besøg hos Seb og Emma</h1>
 
     <p class="hero-text">
-      Vælg dine datoer i kalenderen, send en booking, og så vender jeg tilbage.
-      Bookingen er først endelig, når jeg har bekræftet den.
+      Vælg dine datoer i kalenderen, send en booking, og så vender vi tilbage.
+      Bookingen er først endelig, når vi har bekræftet den.
     </p>
 
   </section>
@@ -92,12 +92,16 @@
     </div>
   </section>
 
-  <div th:if="${successMessage}" class="booking-confirmation">
-    <div class="confirmation-icon">🎉</div>
+  <div
+          th:if="${successMessage}"
+          id="booking-success-popup"
+          class="booking-success-popup"
+  >
+    <div class="booking-success-icon">🎉</div>
 
     <div>
-      <h2>Booking sendt</h2>
-      <p th:text="${successMessage}"></p>
+      <strong>Booking sendt</strong>
+      <p>Din booking er sendt. Vi tjekker datoerne og vender tilbage til dig.</p>
     </div>
   </div>
 

@@ -1,6 +1,7 @@
 package org.example.visitorbooking.controller;
 
 import org.example.visitorbooking.dto.CalendarEventDto;
+import org.example.visitorbooking.dto.GuestHighlightDto;
 import org.example.visitorbooking.dto.LeaderboardDto;
 import org.example.visitorbooking.model.Booking;
 import org.example.visitorbooking.service.BookingService;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.example.visitorbooking.dto.GuestHighlightDto;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class BookingController {
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "Din booking er sendt. Jeg tjekker datoerne og vender tilbage til dig."
+                    "Din booking er sendt. Vi tjekker datoerne og vender tilbage til dig."
             );
 
             return "redirect:/bookings";
@@ -64,10 +64,10 @@ public class BookingController {
         return "admin";
     }
 
-    @PostMapping("/admin/block")
-    public String createBlockedBooking(@ModelAttribute Booking booking, Model model) {
+    @PostMapping("/admin/calendar-entry")
+    public String createAdminCalendarEntry(@ModelAttribute Booking booking, Model model) {
         try {
-            bookingService.createBlockedBooking(booking);
+            bookingService.createAdminCalendarEntry(booking);
             return "redirect:/admin";
         } catch (IllegalArgumentException error) {
             model.addAttribute("errorMessage", error.getMessage());
@@ -78,17 +78,25 @@ public class BookingController {
         }
     }
 
-    @PostMapping("/admin/event")
-    public String createEvent(@ModelAttribute Booking booking, Model model) {
+    @GetMapping("/admin/edit/{id}")
+    public String showEditPage(@PathVariable Long id, Model model) {
+        model.addAttribute("booking", bookingService.findBookingById(id));
+        return "edit-booking";
+    }
+
+    @PostMapping("/admin/edit/{id}")
+    public String updateBooking(
+            @PathVariable Long id,
+            @ModelAttribute Booking booking,
+            Model model
+    ) {
         try {
-            bookingService.createEventBooking(booking);
+            bookingService.updateBooking(id, booking);
             return "redirect:/admin";
         } catch (IllegalArgumentException error) {
             model.addAttribute("errorMessage", error.getMessage());
             model.addAttribute("booking", booking);
-            model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
-            model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
-            return "admin";
+            return "edit-booking";
         }
     }
 
@@ -116,46 +124,9 @@ public class BookingController {
         return bookingService.findGuestLeaderboard();
     }
 
-    @PostMapping("/admin/calendar-entry")
-    public String createAdminCalendarEntry(@ModelAttribute Booking booking, Model model) {
-        try {
-            bookingService.createAdminCalendarEntry(booking);
-            return "redirect:/admin";
-        } catch (IllegalArgumentException error) {
-            model.addAttribute("errorMessage", error.getMessage());
-            model.addAttribute("booking", booking);
-            model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
-            model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
-            return "admin";
-        }
-    }
-
     @GetMapping("/api/bookings/guest-highlights")
     @ResponseBody
     public GuestHighlightDto getGuestHighlights() {
         return bookingService.findGuestHighlights();
     }
-
-    @GetMapping("/admin/edit/{id}")
-    public String showEditPage(@PathVariable Long id, Model model) {
-        model.addAttribute("booking", bookingService.findBookingById(id));
-        return "edit-booking";
-    }
-
-    @PostMapping("/admin/edit/{id}")
-    public String updateBooking(
-            @PathVariable Long id,
-            @ModelAttribute Booking booking,
-            Model model
-    ) {
-        try {
-            bookingService.updateBooking(id, booking);
-            return "redirect:/admin";
-        } catch (IllegalArgumentException error) {
-            model.addAttribute("errorMessage", error.getMessage());
-            model.addAttribute("booking", booking);
-            return "edit-booking";
-        }
-    }
-
 }
