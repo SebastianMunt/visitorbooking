@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Book besøg</title>
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script src="/js/bookings.js" defer></script>
+</head>
+<body>
+
+<div class="page-container">
+
+  <div class="card">
+    <h1>Book besøg</h1>
+
+    <p>
+      Vælg datoer i kalenderen og udfyld dit navn.
+      Røde perioder er allerede booket, og grå perioder er blokeret.
+    </p>
+
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+  </div>
+
+  <div class="card">
+    <h2>Kalender</h2>
+    <div id="calendar" data-api-url="/api/bookings/public"></div>
+  </div>
+
+  <div class="card">
+    <h2>Opret booking</h2>
+
+    <form action="/bookings" method="post" th:object="${booking}">
+
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+      <label>Navn:</label><br>
+      <input type="text" th:field="*{guestName}" required><br><br>
+
+      <label>Ankomstdato:</label><br>
+      <input type="date" th:field="*{startDate}" required><br><br>
+
+      <label>Afrejsedato:</label><br>
+      <input type="date" th:field="*{endDate}" required><br><br>
+
+      <label>Kommentar:</label><br>
+      <textarea th:field="*{comment}" placeholder="Fx hvem du kommer med, cirka ankomsttid eller andet"></textarea><br><br>
+
+      <button type="submit">Book besøg</button>
+
+    </form>
+  </div>
+
+  <a href="/">Tilbage til forsiden</a>
+
+</div>
+
+</body>
+</html>

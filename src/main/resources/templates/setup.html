@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Setup - Visitor Booking</title>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="page-container">
+
+  <div class="card">
+    <h1>Førstegangs-setup</h1>
+
+    <p>
+      Opret admin-kodeord til booking-systemet.
+      Brugernavnet bliver <strong>admin</strong>.
+    </p>
+
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+
+    <form action="/setup" method="post">
+
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+      <label>Admin-kodeord:</label><br>
+      <input type="password" name="password" required><br><br>
+
+      <label>Gentag admin-kodeord:</label><br>
+      <input type="password" name="confirmPassword" required><br><br>
+
+      <button type="submit">Opret admin</button>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>
