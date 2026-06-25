@@ -6,11 +6,9 @@ import org.example.visitorbooking.model.Booking;
 import org.example.visitorbooking.service.BookingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.example.visitorbooking.dto.GuestHighlightDto;
 
 import java.util.List;
 
@@ -94,9 +92,9 @@ public class BookingController {
         }
     }
 
-    @PostMapping("/admin/delete")
-    public String deleteBooking(@ModelAttribute Booking booking) {
-        bookingService.deleteBooking(booking.getId());
+    @PostMapping("/admin/delete/{id}")
+    public String deleteBooking(@PathVariable Long id) {
+        bookingService.deleteBooking(id);
         return "redirect:/admin";
     }
 
@@ -129,6 +127,34 @@ public class BookingController {
             model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
             model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
             return "admin";
+        }
+    }
+
+    @GetMapping("/api/bookings/guest-highlights")
+    @ResponseBody
+    public GuestHighlightDto getGuestHighlights() {
+        return bookingService.findGuestHighlights();
+    }
+
+    @GetMapping("/admin/edit/{id}")
+    public String showEditPage(@PathVariable Long id, Model model) {
+        model.addAttribute("booking", bookingService.findBookingById(id));
+        return "edit-booking";
+    }
+
+    @PostMapping("/admin/edit/{id}")
+    public String updateBooking(
+            @PathVariable Long id,
+            @ModelAttribute Booking booking,
+            Model model
+    ) {
+        try {
+            bookingService.updateBooking(id, booking);
+            return "redirect:/admin";
+        } catch (IllegalArgumentException error) {
+            model.addAttribute("errorMessage", error.getMessage());
+            model.addAttribute("booking", booking);
+            return "edit-booking";
         }
     }
 

@@ -107,6 +107,49 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        const nextWeekend = findNextAvailableWeekend(events);
+        const nextEvent = findNextEvent(events);
+
+        let html = "";
+
+        if (nextWeekend) {
+            html += `
+            <div class="next-info-block">
+                <span class="next-info-label">Næste ledige weekend</span>
+                <strong>${formatPrettyDate(nextWeekend.saturday)} til ${formatPrettyDate(nextWeekend.sunday)}</strong>
+                <span>Næste weekend der ser helt ledig ud.</span>
+            </div>
+        `;
+        } else {
+            html += `
+            <div class="next-info-block">
+                <span class="next-info-label">Ledig weekend</span>
+                <span>Jeg kunne ikke finde en ledig weekend lige nu.</span>
+            </div>
+        `;
+        }
+
+        if (nextEvent) {
+            html += `
+            <div class="next-info-block next-event-block">
+                <span class="next-info-label">Næste event</span>
+                <strong>${nextEvent.title}</strong>
+                <span>${formatPrettyDate(nextEvent.start)}${nextEvent.end ? " til " + formatPrettyDate(subtractOneDay(nextEvent.end)) : ""}</span>
+            </div>
+        `;
+        } else {
+            html += `
+            <div class="next-info-block next-event-block">
+                <span class="next-info-label">Næste event</span>
+                <span>Der er ingen events i kalenderen endnu.</span>
+            </div>
+        `;
+        }
+
+        element.innerHTML = html;
+    }
+
+    function findNextAvailableWeekend(events) {
         const occupiedDates = buildOccupiedDateSet(events);
         const today = new Date();
 
@@ -126,15 +169,24 @@ document.addEventListener("DOMContentLoaded", function () {
             const sunday = formatDate(sundayDate);
 
             if (!occupiedDates.has(saturday) && !occupiedDates.has(sunday)) {
-                element.innerHTML = `
-                    <strong>${formatPrettyDate(saturday)} til ${formatPrettyDate(sunday)}</strong>
-                    <span>Næste weekend der ser helt ledig ud.</span>
-                `;
-                return;
+                return {
+                    saturday: saturday,
+                    sunday: sunday
+                };
             }
         }
 
-        element.textContent = "Jeg kunne ikke finde en ledig weekend lige nu.";
+        return null;
+    }
+
+    function findNextEvent(events) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return events
+            .filter(event => isEventOnly(event))
+            .filter(event => parseDate(event.start) >= today)
+            .sort((a, b) => parseDate(a.start) - parseDate(b.start))[0] || null;
     }
 
     function renderCalendarHeatmap(events) {
@@ -173,27 +225,51 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("/api/bookings/leaderboard")
-            .then(response => response.json())
-            .then(leaderboard => {
+        Promise.all([
+            fetch("/api/bookings/leaderboard").then(response => response.json()),
+            fetch("/api/bookings/guest-highlights").then(response => response.json())
+        ])
+            .then(([leaderboard, highlights]) => {
+                let html = "";
+
                 if (!leaderboard || leaderboard.length === 0) {
-                    element.innerHTML = `<p>Ingen gæster på leaderboard endnu.</p>`;
-                    return;
-                }
+                    html += `<p>Ingen gæster på leaderboard endnu.</p>`;
+                } else {
+                    html += leaderboard
+                        .map((guest, index) => {
+                            const bookingText = guest.visitCount === 1 ? "booking" : "bookinger";
 
-                element.innerHTML = leaderboard
-                    .map((guest, index) => {
-                        const bookingText = guest.visitCount === 1 ? "booking" : "bookinger";
-
-                        return `
+                            return `
                             <div class="leaderboard-row">
                                 <span class="leaderboard-place">${index + 1}</span>
                                 <span class="leaderboard-name">${guest.guestName}</span>
                                 <span class="leaderboard-count">${guest.visitCount} ${bookingText}</span>
                             </div>
                         `;
-                    })
-                    .join("");
+                        })
+                        .join("");
+                }
+
+                html += `
+                <div class="leaderboard-highlights">
+                    <div class="leaderboard-highlight">
+                        <span>🏆</span>
+                        <p>${highlights.longestVisitText}</p>
+                    </div>
+
+                    <div class="leaderboard-highlight">
+                        <span>🥇</span>
+                        <p>${highlights.firstBookingText}</p>
+                    </div>
+
+                    <div class="leaderboard-highlight">
+                        <span>🧳</span>
+                        <p>${highlights.firstVisitText}</p>
+                    </div>
+                </div>
+            `;
+
+                element.innerHTML = html;
             })
             .catch(() => {
                 element.textContent = "Kunne ikke hente leaderboard.";
