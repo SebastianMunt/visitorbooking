@@ -1,18 +1,34 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Visitor Booking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Besøg i Barcelona</title>
+
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<h1>Visitor Booking</h1>
+<div class="landing-page">
 
-<p>Systemet virker.</p>
+    <section class="landing-card">
+        <p class="eyebrow">Visitor booking</p>
 
-<a href="/bookings">Gå til booking</a>
-<br><br>
-<a href="/admin">Admin</a>
+        <h1>Besøg os i Barcelona</h1>
+
+        <p class="landing-text">
+            Her kan venner og familie se ledige datoer og sende en bookingforespørgsel.
+            Vi bekræfter datoerne bagefter.
+        </p>
+
+        <div class="landing-actions">
+            <a href="/bookings" class="button">Book besøg</a>
+            <a href="/login" class="secondary-button">Admin login</a>
+        </div>
+    </section>
+
+</div>
 
 </body>
 </html>
