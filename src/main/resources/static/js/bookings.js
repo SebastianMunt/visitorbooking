@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let mobileStartDate = null;
 
+    createEventBubble();
+
     const calendar = new FullCalendar.Calendar(calendarElement, {
         initialView: "dayGridMonth",
         firstDay: 1,
@@ -28,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!startDateInput || !endDateInput) {
                 return;
             }
+
+            hideEventBubble();
 
             const clickedDate = info.dateStr;
 
@@ -47,11 +51,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            hideEventBubble();
+
             startDateInput.value = info.startStr;
             endDateInput.value = subtractOneDay(info.endStr);
 
             mobileStartDate = null;
             updateTripPreview();
+        },
+
+        eventClick: function (info) {
+            info.jsEvent.preventDefault();
+            info.jsEvent.stopPropagation();
+
+            const title = info.event.title || "Event";
+            const dateText = getEventDateText(info.event);
+
+            showEventBubble(title, dateText, info.jsEvent);
         },
 
         events: function (fetchInfo, successCallback, failureCallback) {
@@ -73,6 +89,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadWeather();
     loadLeaderboard();
+
+    document.addEventListener("click", function (event) {
+        const bubble = document.getElementById("event-message-bubble");
+
+        if (!bubble) {
+            return;
+        }
+
+        if (!bubble.contains(event.target) && !event.target.closest(".fc-event")) {
+            hideEventBubble();
+        }
+    });
 
     if (startDateInput && endDateInput) {
         startDateInput.addEventListener("change", updateTripPreview);
@@ -100,6 +128,128 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTripPreview();
     }
 
+    function createEventBubble() {
+        if (document.getElementById("event-message-bubble")) {
+            return;
+        }
+
+        const bubble = document.createElement("div");
+        bubble.id = "event-message-bubble";
+
+        bubble.innerHTML = `
+            <div id="event-message-bubble-title"></div>
+            <div id="event-message-bubble-date"></div>
+        `;
+
+        bubble.style.position = "fixed";
+        bubble.style.zIndex = "9999";
+        bubble.style.maxWidth = "min(280px, calc(100vw - 32px))";
+        bubble.style.padding = "12px 14px";
+        bubble.style.borderRadius = "22px";
+        bubble.style.background = "#28a745";
+        bubble.style.color = "#ffffff";
+        bubble.style.boxShadow = "0 12px 30px rgba(0, 0, 0, 0.22)";
+        bubble.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+        bubble.style.fontSize = "0.95rem";
+        bubble.style.lineHeight = "1.25";
+        bubble.style.wordBreak = "break-word";
+        bubble.style.opacity = "0";
+        bubble.style.pointerEvents = "none";
+        bubble.style.transform = "translateY(8px) scale(0.96)";
+        bubble.style.transition = "opacity 160ms ease, transform 160ms ease";
+        bubble.style.display = "none";
+
+        document.body.appendChild(bubble);
+
+        const titleElement = document.getElementById("event-message-bubble-title");
+        const dateElement = document.getElementById("event-message-bubble-date");
+
+        titleElement.style.fontWeight = "800";
+        titleElement.style.marginBottom = "4px";
+
+        dateElement.style.fontSize = "0.78rem";
+        dateElement.style.opacity = "0.88";
+        dateElement.style.fontWeight = "650";
+    }
+
+    function showEventBubble(title, dateText, mouseEvent) {
+        const bubble = document.getElementById("event-message-bubble");
+        const titleElement = document.getElementById("event-message-bubble-title");
+        const dateElement = document.getElementById("event-message-bubble-date");
+
+        if (!bubble || !titleElement || !dateElement) {
+            return;
+        }
+
+        titleElement.textContent = title;
+        dateElement.textContent = dateText;
+
+        bubble.style.display = "block";
+        bubble.style.opacity = "0";
+        bubble.style.pointerEvents = "auto";
+        bubble.style.transform = "translateY(8px) scale(0.96)";
+
+        const bubbleWidth = Math.min(280, window.innerWidth - 32);
+        let left = mouseEvent.clientX - bubbleWidth / 2;
+        let top = mouseEvent.clientY - 78;
+
+        if (left < 16) {
+            left = 16;
+        }
+
+        if (left + bubbleWidth > window.innerWidth - 16) {
+            left = window.innerWidth - bubbleWidth - 16;
+        }
+
+        if (top < 84) {
+            top = mouseEvent.clientY + 18;
+        }
+
+        bubble.style.width = bubbleWidth + "px";
+        bubble.style.left = left + "px";
+        bubble.style.top = top + "px";
+
+        requestAnimationFrame(function () {
+            bubble.style.opacity = "1";
+            bubble.style.transform = "translateY(0) scale(1)";
+        });
+    }
+
+    function hideEventBubble() {
+        const bubble = document.getElementById("event-message-bubble");
+
+        if (!bubble) {
+            return;
+        }
+
+        bubble.style.opacity = "0";
+        bubble.style.pointerEvents = "none";
+        bubble.style.transform = "translateY(8px) scale(0.96)";
+
+        setTimeout(function () {
+            if (bubble.style.opacity === "0") {
+                bubble.style.display = "none";
+            }
+        }, 180);
+    }
+
+    function getEventDateText(event) {
+        const startText = formatPrettyDate(event.start);
+
+        if (!event.end) {
+            return startText;
+        }
+
+        const realEndDate = subtractOneDay(formatDate(event.end));
+        const endText = formatPrettyDate(realEndDate);
+
+        if (endText === startText) {
+            return startText;
+        }
+
+        return `${startText} til ${endText}`;
+    }
+
     function renderNextAvailableWeekend(events) {
         const element = document.getElementById("next-weekend");
 
@@ -114,36 +264,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (nextWeekend) {
             html += `
-            <div class="next-info-block">
-                <span class="next-info-label">Næste ledige weekend</span>
-                <strong>${formatPrettyDate(nextWeekend.saturday)} til ${formatPrettyDate(nextWeekend.sunday)}</strong>
-                <span>Næste weekend der ser helt ledig ud.</span>
-            </div>
-        `;
+                <div class="next-info-block">
+                    <span class="next-info-label">Næste ledige weekend</span>
+                    <strong>${formatPrettyDate(nextWeekend.saturday)} til ${formatPrettyDate(nextWeekend.sunday)}</strong>
+                    <span>Næste weekend der ser helt ledig ud efter 1/9.</span>
+                </div>
+            `;
         } else {
             html += `
-            <div class="next-info-block">
-                <span class="next-info-label">Ledig weekend</span>
-                <span>Jeg kunne ikke finde en ledig weekend lige nu.</span>
-            </div>
-        `;
+                <div class="next-info-block">
+                    <span class="next-info-label">Næste ledige weekend</span>
+                    <strong>Ingen ledige weekender fundet</strong>
+                    <span>Der er ikke fundet en ledig weekend efter 1/9.</span>
+                </div>
+            `;
         }
 
         if (nextEvent) {
             html += `
-            <div class="next-info-block next-event-block">
-                <span class="next-info-label">Næste event</span>
-                <strong>${nextEvent.title}</strong>
-                <span>${formatPrettyDate(nextEvent.start)}${nextEvent.end ? " til " + formatPrettyDate(subtractOneDay(nextEvent.end)) : ""}</span>
-            </div>
-        `;
+                <div class="next-info-block next-event-block">
+                    <span class="next-info-label">Næste event</span>
+                    <strong>${nextEvent.title}</strong>
+                    <span>${formatPrettyDate(nextEvent.start)}${nextEvent.end ? " til " + formatPrettyDate(subtractOneDay(nextEvent.end)) : ""}</span>
+                </div>
+            `;
         } else {
             html += `
-            <div class="next-info-block next-event-block">
-                <span class="next-info-label">Næste event</span>
-                <span>Der er ingen events i kalenderen endnu.</span>
-            </div>
-        `;
+                <div class="next-info-block next-event-block">
+                    <span class="next-info-label">Næste event</span>
+                    <span>Der er ingen events i kalenderen endnu.</span>
+                </div>
+            `;
         }
 
         element.innerHTML = html;
@@ -151,29 +302,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function findNextAvailableWeekend(events) {
         const occupiedDates = buildOccupiedDateSet(events);
-        const today = new Date();
 
-        for (let i = 0; i < 365; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
+        let date = new Date();
+        const minimumDate = new Date(2026, 8, 1);
 
-            if (date.getDay() !== 6) {
-                continue;
-            }
+        if (date < minimumDate) {
+            date = minimumDate;
+        }
 
-            const saturday = formatDate(date);
+        date.setHours(0, 0, 0, 0);
 
-            const sundayDate = new Date(date);
-            sundayDate.setDate(date.getDate() + 1);
+        while (date.getDay() !== 5) {
+            date.setDate(date.getDate() + 1);
+        }
 
-            const sunday = formatDate(sundayDate);
+        for (let i = 0; i < 104; i++) {
+            const friday = new Date(date);
+            const saturday = addDays(friday, 1);
+            const sunday = addDays(friday, 2);
 
-            if (!occupiedDates.has(saturday) && !occupiedDates.has(sunday)) {
+            const fridayKey = formatDate(friday);
+            const saturdayKey = formatDate(saturday);
+            const sundayKey = formatDate(sunday);
+
+            const weekendIsFree =
+                !occupiedDates.has(fridayKey) &&
+                !occupiedDates.has(saturdayKey) &&
+                !occupiedDates.has(sundayKey);
+
+            if (weekendIsFree) {
                 return {
+                    friday: friday,
                     saturday: saturday,
                     sunday: sunday
                 };
             }
+
+            date.setDate(date.getDate() + 7);
         }
 
         return null;
@@ -240,34 +405,34 @@ document.addEventListener("DOMContentLoaded", function () {
                             const bookingText = guest.visitCount === 1 ? "booking" : "bookinger";
 
                             return `
-                            <div class="leaderboard-row">
-                                <span class="leaderboard-place">${index + 1}</span>
-                                <span class="leaderboard-name">${guest.guestName}</span>
-                                <span class="leaderboard-count">${guest.visitCount} ${bookingText}</span>
-                            </div>
-                        `;
+                                <div class="leaderboard-row">
+                                    <span class="leaderboard-place">${index + 1}</span>
+                                    <span class="leaderboard-name">${guest.guestName}</span>
+                                    <span class="leaderboard-count">${guest.visitCount} ${bookingText}</span>
+                                </div>
+                            `;
                         })
                         .join("");
                 }
 
                 html += `
-                <div class="leaderboard-highlights">
-                    <div class="leaderboard-highlight">
-                        <span>🏆</span>
-                        <p>${highlights.longestVisitText}</p>
-                    </div>
+                    <div class="leaderboard-highlights">
+                        <div class="leaderboard-highlight">
+                            <span>🏆</span>
+                            <p>${highlights.longestVisitText}</p>
+                        </div>
 
-                    <div class="leaderboard-highlight">
-                        <span>🥇</span>
-                        <p>${highlights.firstBookingText}</p>
-                    </div>
+                        <div class="leaderboard-highlight">
+                            <span>🥇</span>
+                            <p>${highlights.firstBookingText}</p>
+                        </div>
 
-                    <div class="leaderboard-highlight">
-                        <span>🧳</span>
-                        <p>${highlights.firstVisitText}</p>
+                        <div class="leaderboard-highlight">
+                            <span>🧳</span>
+                            <p>${highlights.firstVisitText}</p>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
                 element.innerHTML = html;
             })
@@ -350,6 +515,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function parseDate(dateString) {
+        if (dateString instanceof Date) {
+            return new Date(dateString);
+        }
+
         const parts = dateString.split("-");
         return new Date(parts[0], parts[1] - 1, parts[2]);
     }
@@ -369,8 +538,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${year}-${month}-${day}`;
     }
 
-    function formatPrettyDate(dateString) {
-        const date = parseDate(dateString);
+    function formatPrettyDate(dateInput) {
+        const date = parseDate(dateInput);
 
         return date.toLocaleDateString("da-DK", {
             day: "numeric",
@@ -434,6 +603,7 @@ function renderForecast(data, forecastElement) {
 
         const card = document.createElement("div");
         card.className = "weather-day";
+
         card.innerHTML = `
             <div class="weather-day-name">${dayName}</div>
             <div class="weather-day-icon">${icon}</div>
