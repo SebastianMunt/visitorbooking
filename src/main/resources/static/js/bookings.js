@@ -288,7 +288,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="next-info-block">
                     <span class="next-info-label">Næste ledige weekend</span>
                     <strong>${formatPrettyDate(nextWeekend.saturday)} til ${formatPrettyDate(nextWeekend.sunday)}</strong>
-                    <span>Næste weekend der ser helt ledig ud efter 1/9.</span>
                 </div>
             `;
         } else {
@@ -317,6 +316,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
         }
+
+        const returnDate = new Date(2027, 0, 27);
+
+        html += `
+    <div class="next-info-block next-return-block">
+        <span class="next-info-label">Hjemrejsedato</span>
+        <strong>${formatFullPrettyDate(returnDate)}</strong>
+        <span>Planlagt hjemrejse fra Barcelona.</span>
+    </div>
+`;
 
         element.innerHTML = html;
     }
@@ -581,6 +590,16 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(function () {
                 popup.remove();
             }, 200);
+        });
+    }
+
+    function formatFullPrettyDate(dateInput) {
+        const date = parseDate(dateInput);
+
+        return date.toLocaleDateString("da-DK", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
         });
     }
 
