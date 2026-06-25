@@ -1404,3 +1404,81 @@ td button {
         transform: translate(-50%, -50%) scale(1);
     }
 }
+
+/* =========================
+   Admin scoreboard
+   ========================= */
+
+.admin-scoreboard {
+    padding: 20px;
+    margin: 18px 0;
+    border-radius: 26px;
+    background:
+            linear-gradient(135deg, rgba(255, 243, 223, 0.96), rgba(255, 255, 255, 0.96)),
+            radial-gradient(circle at top right, rgba(47, 128, 237, 0.14), transparent 36%);
+    border: 1px solid rgba(234, 223, 206, 0.95);
+    box-shadow: var(--shadow);
+}
+
+.scoreboard-header h2 {
+    margin: 0 0 14px;
+}
+
+.scoreboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.scoreboard-card {
+    padding: 16px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #f0e4d4;
+    box-shadow: 0 10px 22px rgba(75, 53, 33, 0.08);
+}
+
+.scoreboard-icon {
+    display: block;
+    font-size: 1.45rem;
+    margin-bottom: 8px;
+}
+
+.scoreboard-card strong {
+    display: block;
+    color: var(--text);
+    font-size: 1.65rem;
+    line-height: 1;
+    font-weight: 950;
+    letter-spacing: -0.05em;
+}
+
+.scoreboard-card p {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 750;
+}
+
+.scoreboard-wide {
+    grid-column: 1 / -1;
+}
+
+.scoreboard-wide strong {
+    font-size: 1.1rem;
+    letter-spacing: -0.03em;
+}
+
+@media (min-width: 760px) {
+    .admin-scoreboard {
+        padding: 24px;
+    }
+
+    .scoreboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .scoreboard-wide {
+        grid-column: auto;
+    }
+}

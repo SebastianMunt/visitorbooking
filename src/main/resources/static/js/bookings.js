@@ -68,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const title = info.event.title || "Event";
             const dateText = getEventDateText(info.event);
 
-            showEventBubble(title, dateText, info.jsEvent);
+            const type = info.event.extendedProps.bookingType;
+            const comment = info.event.extendedProps.comment;
+            const days = info.event.extendedProps.days;
+
+            showEventBubble(title, dateText, info.jsEvent, type, comment, days);
         },
 
         events: function (fetchInfo, successCallback, failureCallback) {
@@ -173,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dateElement.style.fontWeight = "650";
     }
 
-    function showEventBubble(title, dateText, mouseEvent) {
+    function showEventBubble(title, dateText, mouseEvent, type, comment, days) {
         const bubble = document.getElementById("event-message-bubble");
         const titleElement = document.getElementById("event-message-bubble-title");
         const dateElement = document.getElementById("event-message-bubble-date");
@@ -183,16 +187,32 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         titleElement.textContent = title;
-        dateElement.textContent = dateText;
+
+        let details = dateText;
+
+        if (days) {
+            details += ` · ${days} dag${days > 1 ? "e" : ""}`;
+        }
+
+        if (type) {
+            details += ` · ${type}`;
+        }
+
+        if (comment && comment.trim() !== "") {
+            details += `\n${comment}`;
+        }
+
+        dateElement.textContent = details;
+        dateElement.style.whiteSpace = "pre-line";
 
         bubble.style.display = "block";
         bubble.style.opacity = "0";
         bubble.style.pointerEvents = "auto";
         bubble.style.transform = "translateY(8px) scale(0.96)";
 
-        const bubbleWidth = Math.min(280, window.innerWidth - 32);
+        const bubbleWidth = Math.min(300, window.innerWidth - 32);
         let left = mouseEvent.clientX - bubbleWidth / 2;
-        let top = mouseEvent.clientY - 78;
+        let top = mouseEvent.clientY - 92;
 
         if (left < 16) {
             left = 16;

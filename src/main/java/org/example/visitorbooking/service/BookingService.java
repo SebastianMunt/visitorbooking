@@ -8,10 +8,16 @@ import org.example.visitorbooking.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 import org.example.visitorbooking.dto.GuestHighlightDto;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
+
+import org.example.visitorbooking.dto.AdminScoreboardDto;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import java.util.Comparator;
 import java.util.List;
@@ -191,29 +197,32 @@ public class BookingService {
     }
 
     private CalendarEventDto convertToAdminCalendarEvent(Booking booking) {
-        if (booking.getBookingType() == BookingType.EVENT) {
-            return new CalendarEventDto(
-                    booking.getGuestName(),
-                    booking.getStartDate().toString(),
-                    booking.getEndDate().plusDays(1).toString(),
-                    "#28a745"
-            );
-        }
+        String title;
+        String color;
+        String typeText;
 
-        if (booking.getBookingType() == BookingType.BLOCKED) {
-            return new CalendarEventDto(
-                    "Blokeret",
-                    booking.getStartDate().toString(),
-                    booking.getEndDate().plusDays(1).toString(),
-                    "#777777"
-            );
+        if (booking.getBookingType() == BookingType.EVENT) {
+            title = booking.getGuestName();
+            color = "#28a745";
+            typeText = "Event";
+        } else if (booking.getBookingType() == BookingType.BLOCKED) {
+            title = "Blokeret";
+            color = "#777777";
+            typeText = "Blokering";
+        } else {
+            title = booking.getGuestName();
+            color = "#d9534f";
+            typeText = "Booking";
         }
 
         return new CalendarEventDto(
-                booking.getGuestName(),
+                title,
                 booking.getStartDate().toString(),
                 booking.getEndDate().plusDays(1).toString(),
-                "#d9534f"
+                color,
+                typeText,
+                booking.getComment(),
+                calculateBookingDays(booking)
         );
     }
 
@@ -338,6 +347,102 @@ public class BookingService {
         if (!overlappingBookings.isEmpty()) {
             throw new IllegalArgumentException("Datoerne overlapper med en eksisterende booking eller blokering.");
         }
+    }
+
+    public AdminScoreboardDto findAdminScoreboard() {
+        List<Booking> guestBookings = bookingRepository.findByBookingType(BookingType.GUEST);
+
+        long bookingCount = guestBookings.size();
+
+        long bookedDays = guestBookings.stream()
+                .mapToLong(this::calculateBookingDays)
+                .sum();
+
+        Set<String> uniqueGuests = guestBookings.stream()
+                .map(Booking::getGuestName)
+                .filter(name -> name != null && !name.isBlank())
+                .map(name -> name.trim().toLowerCase())
+                .collect(Collectors.toSet());
+
+        long guestCount = uniqueGuests.size();
+
+        String longestVisitText = guestBookings.stream()
+                .max((a, b) -> Long.compare(calculateBookingDays(a), calculateBookingDays(b)))
+                .map(booking -> booking.getGuestName()
+                        + " har det længste besøg på "
+                        + calculateBookingDays(booking)
+                        + " dage")
+                .orElse("Der er ingen bookinger endnu");
+
+        return new AdminScoreboardDto(
+                bookingCount,
+                bookedDays,
+                guestCount,
+                longestVisitText
+        );
+    }
+
+    public String createIcsCalendar() {
+        List<Booking> bookings = findAllBookings();
+
+        StringBuilder ics = new StringBuilder();
+
+        ics.append("BEGIN:VCALENDAR\r\n");
+        ics.append("VERSION:2.0\r\n");
+        ics.append("PRODID:-//Visitorbooking//Barcelona Calendar//DA\r\n");
+        ics.append("CALSCALE:GREGORIAN\r\n");
+
+        for (Booking booking : bookings) {
+            String title = getIcsTitle(booking);
+            String description = booking.getComment() == null ? "" : booking.getComment();
+
+            ics.append("BEGIN:VEVENT\r\n");
+            ics.append("UID:booking-").append(booking.getId()).append("@visitorbooking\r\n");
+            ics.append("DTSTAMP:").append(formatIcsTimestamp()).append("\r\n");
+            ics.append("DTSTART;VALUE=DATE:").append(formatIcsDate(booking.getStartDate())).append("\r\n");
+            ics.append("DTEND;VALUE=DATE:").append(formatIcsDate(booking.getEndDate().plusDays(1))).append("\r\n");
+            ics.append("SUMMARY:").append(escapeIcsText(title)).append("\r\n");
+
+            if (!description.isBlank()) {
+                ics.append("DESCRIPTION:").append(escapeIcsText(description)).append("\r\n");
+            }
+
+            ics.append("END:VEVENT\r\n");
+        }
+
+        ics.append("END:VCALENDAR\r\n");
+
+        return ics.toString();
+    }
+
+    private String getIcsTitle(Booking booking) {
+        if (booking.getBookingType() == BookingType.EVENT) {
+            return booking.getGuestName();
+        }
+
+        if (booking.getBookingType() == BookingType.BLOCKED) {
+            return "Blokeret";
+        }
+
+        return "Besøg: " + booking.getGuestName();
+    }
+
+    private String formatIcsDate(LocalDate date) {
+        return date.toString().replace("-", "");
+    }
+
+    private String formatIcsTimestamp() {
+        return java.time.ZonedDateTime.now(java.time.ZoneOffset.UTC)
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
+    }
+
+    private String escapeIcsText(String text) {
+        return text
+                .replace("\\", "\\\\")
+                .replace(",", "\\,")
+                .replace(";", "\\;")
+                .replace("\n", "\\n")
+                .replace("\r", "");
     }
 
 }

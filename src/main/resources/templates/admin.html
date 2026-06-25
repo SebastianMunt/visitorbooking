@@ -173,12 +173,48 @@
     </div>
   </div>
 
+  <section class="admin-scoreboard">
+    <div class="scoreboard-header">
+      <p class="eyebrow">Barcelona scoreboard</p>
+      <h2>Overblik over besøg</h2>
+    </div>
+
+    <div class="scoreboard-grid">
+      <div class="scoreboard-card">
+        <span class="scoreboard-icon">📅</span>
+        <strong th:text="${scoreboard.bookingCount}">0</strong>
+        <p>Bookinger</p>
+      </div>
+
+      <div class="scoreboard-card">
+        <span class="scoreboard-icon">🌴</span>
+        <strong th:text="${scoreboard.bookedDays}">0</strong>
+        <p>Bookede dage</p>
+      </div>
+
+      <div class="scoreboard-card">
+        <span class="scoreboard-icon">🧳</span>
+        <strong th:text="${scoreboard.guestCount}">0</strong>
+        <p>Forskellige gæster</p>
+      </div>
+
+      <div class="scoreboard-card scoreboard-wide">
+        <span class="scoreboard-icon">🏆</span>
+        <strong>Rekord</strong>
+        <p th:text="${scoreboard.longestVisitText}">
+          Der er ingen bookinger endnu
+        </p>
+      </div>
+    </div>
+  </section>
+
   <div class="card">
     <h2>Links</h2>
 
     <div class="actions">
       <a href="/bookings" class="button">Gå til booking-side</a>
       <a href="/" class="button">Tilbage til forsiden</a>
+      <a href="/admin/calendar.ics" class="button">Download kalender</a>
       <a href="/admin/change-password" class="button button-danger-soft">Skift admin-kodeord</a>
     </div>
   </div>

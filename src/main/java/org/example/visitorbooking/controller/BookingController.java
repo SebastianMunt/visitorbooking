@@ -9,6 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.example.visitorbooking.dto.AdminScoreboardDto;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 
@@ -60,6 +65,7 @@ public class BookingController {
 
         model.addAttribute("guestBookings", bookingService.findGuestBookingsSortedByDate());
         model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
+        model.addAttribute("scoreboard", bookingService.findAdminScoreboard());
 
         return "admin";
     }
@@ -129,4 +135,16 @@ public class BookingController {
     public GuestHighlightDto getGuestHighlights() {
         return bookingService.findGuestHighlights();
     }
+
+    @GetMapping("/admin/calendar.ics")
+    @ResponseBody
+    public ResponseEntity<String> downloadCalendar() {
+        String calendarContent = bookingService.createIcsCalendar();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=barcelona-bookinger.ics")
+                .contentType(MediaType.parseMediaType("text/calendar; charset=utf-8"))
+                .body(calendarContent);
+    }
+
 }
