@@ -2,6 +2,7 @@ function initCalendar(calendarElement) {
     const startDateInput = document.querySelector('input[name="startDate"]');
     const endDateInput = document.querySelector('input[name="endDate"]');
     const calendarApiUrl = calendarElement.dataset.apiUrl;
+    const footballToggle = document.getElementById("football-toggle");
 
     let mobileStartDate = null;
 
@@ -71,11 +72,13 @@ function initCalendar(calendarElement) {
             fetch(calendarApiUrl)
                 .then(response => response.json())
                 .then(events => {
-                    successCallback(events);
+                    const visibleEvents = filterFootballEvents(events);
+
+                    successCallback(visibleEvents);
 
                     setTimeout(function () {
                         renderNextAvailableWeekend(events);
-                        renderCalendarHeatmap(events);
+                        renderCalendarHeatmap(visibleEvents);
                     }, 100);
                 })
                 .catch(error => failureCallback(error));
@@ -83,6 +86,12 @@ function initCalendar(calendarElement) {
     });
 
     calendar.render();
+
+    if (footballToggle) {
+        footballToggle.addEventListener("change", function () {
+            calendar.refetchEvents();
+        });
+    }
 
     document.addEventListener("click", function (event) {
         const bubble = document.getElementById("event-message-bubble");
@@ -305,7 +314,9 @@ function getDatesInEventRange(event) {
 }
 
 function isEventOnly(event) {
-    return event.color === "#28a745";
+    return event.color === "#28a745" ||
+        event.color === "#1d4ed8" ||
+        isFootballEvent(event);
 }
 
 function updateTripPreview(startDateInput, endDateInput) {
@@ -334,4 +345,20 @@ function updateTripPreview(startDateInput, endDateInput) {
 
 function isTouchDevice() {
     return window.matchMedia("(pointer: coarse)").matches;
+}
+
+function filterFootballEvents(events) {
+    const footballToggle = document.getElementById("football-toggle");
+
+    if (!footballToggle || footballToggle.checked) {
+        return events;
+    }
+
+    return events.filter(event => !isFootballEvent(event));
+}
+
+function isFootballEvent(event) {
+    return event.title === "⚽️" ||
+        event.bookingType === "Fodboldkamp" ||
+        event.extendedProps?.bookingType === "Fodboldkamp";
 }

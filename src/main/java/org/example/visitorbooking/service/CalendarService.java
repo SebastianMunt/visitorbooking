@@ -33,6 +33,18 @@ public class CalendarService {
     }
 
     private CalendarEventDto convertToPublicCalendarEvent(Booking booking) {
+        if (booking.getBookingType() == BookingType.FOOTBALL) {
+            return new CalendarEventDto(
+                    "⚽️",
+                    booking.getStartDate().toString(),
+                    booking.getEndDate().plusDays(1).toString(),
+                    "#1d4ed8",
+                    "Fodboldkamp",
+                    booking.getComment(),
+                    calculateBookingDays(booking)
+            );
+        }
+
         if (booking.getBookingType() == BookingType.EVENT) {
             return new CalendarEventDto(
                     booking.getGuestName(),
@@ -70,7 +82,11 @@ public class CalendarService {
         String color;
         String typeText;
 
-        if (booking.getBookingType() == BookingType.EVENT) {
+        if (booking.getBookingType() == BookingType.FOOTBALL) {
+            title = "⚽️";
+            color = "#1d4ed8";
+            typeText = "Fodboldkamp";
+        } else if (booking.getBookingType() == BookingType.EVENT) {
             title = booking.getGuestName();
             color = "#28a745";
             typeText = "Event";

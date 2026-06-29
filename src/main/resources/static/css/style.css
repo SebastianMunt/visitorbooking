@@ -1534,3 +1534,28 @@ td button {
         transform: rotate(360deg);
     }
 }
+
+.football-toggle {
+    width: fit-content;
+    margin: 18px 0 14px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 999px;
+    background: #eef4ff;
+    color: #1d4ed8;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.football-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: #1d4ed8;
+    cursor: pointer;
+}
+
+.legend-blue {
+    background: #1d4ed8;
+}
