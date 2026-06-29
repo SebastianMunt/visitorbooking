@@ -12,9 +12,14 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final EmailService emailService;
 
-    public BookingService(BookingRepository bookingRepository) {
+    public BookingService(
+            BookingRepository bookingRepository,
+            EmailService emailService
+    ) {
         this.bookingRepository = bookingRepository;
+        this.emailService = emailService;
     }
 
     public List<Booking> findAllBookings() {
@@ -51,7 +56,9 @@ public class BookingService {
         validateNoOverlap(booking);
 
         booking.setBookingType(BookingType.GUEST);
-        bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        emailService.sendNewBookingEmail(savedBooking);
     }
 
     public void createBlockedBooking(Booking booking) {
