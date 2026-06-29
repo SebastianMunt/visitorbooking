@@ -132,7 +132,6 @@ p {
    Base cards
    ========================= */
 
-form,
 #calendar,
 .table-wrapper,
 section,
@@ -448,9 +447,16 @@ section {
    Forms
    ========================= */
 
-form {
+.card > form,
+.login-form,
+.setup-container form,
+.login-container form {
     padding: 18px;
     margin: 18px 0;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(234, 223, 206, 0.95);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
 }
 
 form label {
@@ -529,6 +535,7 @@ a.button:hover,
 input[type="submit"]:hover {
     filter: brightness(1.03);
     box-shadow: 0 15px 28px rgba(255, 122, 61, 0.34);
+    text-decoration: none;
 }
 
 button:active,
@@ -756,6 +763,32 @@ a:hover {
     min-height: 72px;
 }
 
+/* Football emoji events */
+
+.fc .football-calendar-event {
+    width: fit-content;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.fc .football-calendar-event .fc-event-main {
+    color: inherit !important;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 !important;
+}
+
+.fc .football-calendar-event .fc-event-title {
+    color: inherit !important;
+}
+
+.fc .football-calendar-event:hover {
+    background: transparent !important;
+    transform: scale(1.08);
+}
+
 /* =========================
    Calendar legend
    ========================= */
@@ -795,8 +828,74 @@ a:hover {
     background: #28a745;
 }
 
+.legend-blue {
+    background: #1d4ed8;
+}
+
 .legend-heat {
     background: #ffd59e;
+}
+
+/* =========================
+   Football toggle
+   ========================= */
+
+.football-toggle-row {
+    width: fit-content;
+    margin: 14px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.football-toggle-text {
+    color: #1f2937;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.football-switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+
+.football-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.football-switch-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: #d1d5db;
+    cursor: pointer;
+    transition: background 180ms ease;
+}
+
+.football-switch-slider::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+    transition: transform 180ms ease;
+}
+
+.football-switch input:checked + .football-switch-slider {
+    background: #1d4ed8;
+}
+
+.football-switch input:checked + .football-switch-slider::before {
+    transform: translateX(20px);
 }
 
 /* =========================
@@ -864,11 +963,13 @@ td:nth-child(5) {
     white-space: normal;
 }
 
-td form {
+td form,
+.table-actions form {
     padding: 0;
     margin: 0;
     background: transparent;
     border: 0;
+    border-radius: 0;
     box-shadow: none;
 }
 
@@ -886,14 +987,6 @@ td button {
     align-items: center;
     justify-content: flex-start;
     white-space: nowrap;
-}
-
-.table-actions form {
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
 }
 
 .edit-button {
@@ -927,16 +1020,27 @@ td button {
 .actions {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 10px;
     margin: 16px 0;
 }
 
-.logout-form {
+.logout-form,
+.sync-barca-form,
+.inline-form {
     padding: 0;
     margin: 0;
+    display: inline-flex;
     background: transparent;
     border: 0;
+    border-radius: 0;
     box-shadow: none;
+}
+
+.sync-barca-button {
+    width: 100%;
+    min-height: 50px;
+    white-space: nowrap;
 }
 
 /* =========================
@@ -1113,236 +1217,6 @@ td button {
 }
 
 /* =========================
-   Desktop improvements
-   ========================= */
-
-@media (min-width: 760px) {
-    .page-container,
-    .container,
-    main {
-        width: min(100% - 48px, 1040px);
-        padding: 34px 0 64px;
-    }
-
-    .navbar {
-        padding: 16px max(24px, calc((100vw - 1040px) / 2));
-    }
-
-    .nav-title {
-        font-size: 1.25rem;
-    }
-
-    .hero-card {
-        padding: 34px;
-    }
-
-    .steps-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .weather-card {
-        padding: 24px;
-    }
-
-    .weather-forecast {
-        grid-template-columns: repeat(6, 1fr);
-    }
-
-    form {
-        padding: 24px;
-    }
-
-    button,
-    .button,
-    a.button,
-    input[type="submit"] {
-        width: auto;
-        min-width: 150px;
-    }
-
-    .business-actions,
-    .admin-actions,
-    .actions {
-        flex-direction: row;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    #calendar {
-        padding: 20px;
-    }
-
-    .fc .fc-toolbar {
-        display: flex;
-        justify-content: space-between;
-        text-align: left;
-    }
-
-    .fc .fc-toolbar-title {
-        font-size: 1.8rem;
-    }
-
-    .fc .fc-col-header-cell-cushion {
-        font-size: 0.78rem;
-        padding: 12px 4px;
-    }
-
-    .fc .fc-daygrid-day-frame {
-        min-height: 104px;
-    }
-
-    .fc .fc-daygrid-day-number {
-        padding: 10px;
-        font-size: 0.95rem;
-    }
-
-    .fc .fc-event {
-        font-size: 0.78rem;
-        padding: 3px 7px;
-    }
-
-    .landing-page,
-    .login-page {
-        width: min(100% - 48px, 820px);
-    }
-
-    .landing-card,
-    .login-card {
-        padding: 42px;
-    }
-
-    .landing-actions {
-        grid-template-columns: auto auto;
-        justify-content: start;
-    }
-
-    .secondary-button {
-        width: auto;
-        min-width: 150px;
-    }
-
-    .site-header {
-        height: 76px;
-        padding: 6px max(24px, calc((100vw - 1040px) / 2));
-    }
-
-    .site-header-title {
-        font-size: 1.18rem;
-    }
-
-    .site-header-logo-link {
-        width: 190px;
-        height: 62px;
-    }
-
-    .site-header-logo {
-        width: 190px;
-        transform: scale(1.55);
-    }
-}
-
-/* =========================
-   Extra small phones
-   ========================= */
-
-@media (max-width: 380px) {
-    .page-container,
-    .container,
-    main {
-        width: min(100% - 18px, 1040px);
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    h2 {
-        font-size: 1.15rem;
-    }
-
-    form {
-        padding: 15px;
-    }
-
-    .weather-header {
-        gap: 8px;
-    }
-
-    .weather-current {
-        padding: 8px 10px;
-        font-size: 0.85rem;
-    }
-
-    .booking-insights {
-        gap: 8px;
-    }
-
-    .insight-card {
-        padding: 12px;
-    }
-
-    .insight-card h2 {
-        font-size: 0.95rem;
-    }
-
-    .leaderboard-name {
-        font-size: 0.78rem;
-    }
-
-    .leaderboard-count {
-        font-size: 0.68rem;
-    }
-
-    #calendar {
-        padding: 8px;
-    }
-
-    .fc .fc-toolbar-title {
-        font-size: 1.18rem;
-    }
-
-    .fc .fc-button {
-        font-size: 0.78rem !important;
-        padding: 8px 10px !important;
-    }
-
-    .fc .fc-daygrid-day-frame {
-        min-height: 64px;
-    }
-
-    .fc .fc-event {
-        font-size: 0.66rem;
-        padding: 1px 5px;
-    }
-
-    .landing-page,
-    .login-page {
-        width: min(100% - 18px, 760px);
-    }
-
-    .landing-card,
-    .login-card {
-        padding: 22px;
-        border-radius: 24px;
-    }
-
-    .site-header {
-        height: 64px;
-        padding: 5px 10px;
-    }
-
-    .site-header-logo-link {
-        width: 130px;
-        height: 52px;
-    }
-
-    .site-header-logo {
-        width: 130px;
-        transform: scale(1.65);
-    }
-}
-
-/* =========================
    Booking success popup
    ========================= */
 
@@ -1469,19 +1343,9 @@ td button {
     letter-spacing: -0.03em;
 }
 
-@media (min-width: 760px) {
-    .admin-scoreboard {
-        padding: 24px;
-    }
-
-    .scoreboard-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    .scoreboard-wide {
-        grid-column: auto;
-    }
-}
+/* =========================
+   Booking loading overlay
+   ========================= */
 
 .booking-loading-overlay {
     position: fixed;
@@ -1535,27 +1399,255 @@ td button {
     }
 }
 
-.football-toggle {
-    width: fit-content;
-    margin: 18px 0 14px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 999px;
-    background: #eef4ff;
-    color: #1d4ed8;
-    font-weight: 800;
-    cursor: pointer;
+/* =========================
+   Desktop improvements
+   ========================= */
+
+@media (min-width: 760px) {
+    .page-container,
+    .container,
+    main {
+        width: min(100% - 48px, 1040px);
+        padding: 34px 0 64px;
+    }
+
+    .navbar {
+        padding: 16px max(24px, calc((100vw - 1040px) / 2));
+    }
+
+    .nav-title {
+        font-size: 1.25rem;
+    }
+
+    .hero-card {
+        padding: 34px;
+    }
+
+    .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .weather-card {
+        padding: 24px;
+    }
+
+    .weather-forecast {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .card > form,
+    .login-form,
+    .setup-container form,
+    .login-container form {
+        padding: 24px;
+    }
+
+    button,
+    .button,
+    a.button,
+    input[type="submit"] {
+        width: auto;
+        min-width: 150px;
+    }
+
+    .business-actions,
+    .admin-actions,
+    .actions {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .sync-barca-button {
+        width: auto;
+    }
+
+    #calendar {
+        padding: 20px;
+    }
+
+    .fc .fc-toolbar {
+        display: flex;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.8rem;
+    }
+
+    .fc .fc-col-header-cell-cushion {
+        font-size: 0.78rem;
+        padding: 12px 4px;
+    }
+
+    .fc .fc-daygrid-day-frame {
+        min-height: 104px;
+    }
+
+    .fc .fc-daygrid-day-number {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .fc .fc-event {
+        font-size: 0.78rem;
+        padding: 3px 7px;
+    }
+
+    .landing-page,
+    .login-page {
+        width: min(100% - 48px, 820px);
+    }
+
+    .landing-card,
+    .login-card {
+        padding: 42px;
+    }
+
+    .landing-actions {
+        grid-template-columns: auto auto;
+        justify-content: start;
+    }
+
+    .secondary-button {
+        width: auto;
+        min-width: 150px;
+    }
+
+    .site-header {
+        height: 76px;
+        padding: 6px max(24px, calc((100vw - 1040px) / 2));
+    }
+
+    .site-header-title {
+        font-size: 1.18rem;
+    }
+
+    .site-header-logo-link {
+        width: 190px;
+        height: 62px;
+    }
+
+    .site-header-logo {
+        width: 190px;
+        transform: scale(1.55);
+    }
+
+    .admin-scoreboard {
+        padding: 24px;
+    }
+
+    .scoreboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .scoreboard-wide {
+        grid-column: auto;
+    }
 }
 
-.football-toggle input {
-    width: 18px;
-    height: 18px;
-    accent-color: #1d4ed8;
-    cursor: pointer;
-}
+/* =========================
+   Extra small phones
+   ========================= */
 
-.legend-blue {
-    background: #1d4ed8;
+@media (max-width: 380px) {
+    .page-container,
+    .container,
+    main {
+        width: min(100% - 18px, 1040px);
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.15rem;
+    }
+
+    .card > form,
+    .login-form,
+    .setup-container form,
+    .login-container form {
+        padding: 15px;
+    }
+
+    .weather-header {
+        gap: 8px;
+    }
+
+    .weather-current {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .booking-insights {
+        gap: 8px;
+    }
+
+    .insight-card {
+        padding: 12px;
+    }
+
+    .insight-card h2 {
+        font-size: 0.95rem;
+    }
+
+    .leaderboard-name {
+        font-size: 0.78rem;
+    }
+
+    .leaderboard-count {
+        font-size: 0.68rem;
+    }
+
+    #calendar {
+        padding: 8px;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.18rem;
+    }
+
+    .fc .fc-button {
+        font-size: 0.78rem !important;
+        padding: 8px 10px !important;
+    }
+
+    .fc .fc-daygrid-day-frame {
+        min-height: 64px;
+    }
+
+    .fc .fc-event {
+        font-size: 0.66rem;
+        padding: 1px 5px;
+    }
+
+    .landing-page,
+    .login-page {
+        width: min(100% - 18px, 760px);
+    }
+
+    .landing-card,
+    .login-card {
+        padding: 22px;
+        border-radius: 24px;
+    }
+
+    .site-header {
+        height: 64px;
+        padding: 5px 10px;
+    }
+
+    .site-header-logo-link {
+        width: 130px;
+        height: 52px;
+    }
+
+    .site-header-logo {
+        width: 130px;
+        transform: scale(1.65);
+    }
 }

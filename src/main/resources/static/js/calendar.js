@@ -20,6 +20,14 @@ function initCalendar(calendarElement) {
         longPressDelay: 250,
         selectLongPressDelay: 250,
 
+        eventClassNames: function (info) {
+            if (isFootballEvent(info.event)) {
+                return ["football-calendar-event"];
+            }
+
+            return [];
+        },
+
         dateClick: function (info) {
             if (!startDateInput || !endDateInput) {
                 return;

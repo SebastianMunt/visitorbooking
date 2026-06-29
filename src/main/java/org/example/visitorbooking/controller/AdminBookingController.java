@@ -6,19 +6,24 @@ import org.example.visitorbooking.service.BookingStatsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.example.visitorbooking.service.BarcaCalendarSyncService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AdminBookingController {
 
     private final BookingService bookingService;
     private final BookingStatsService bookingStatsService;
+    private final BarcaCalendarSyncService barcaCalendarSyncService;
 
     public AdminBookingController(
             BookingService bookingService,
-            BookingStatsService bookingStatsService
+            BookingStatsService bookingStatsService,
+            BarcaCalendarSyncService barcaCalendarSyncService
     ) {
         this.bookingService = bookingService;
         this.bookingStatsService = bookingStatsService;
+        this.barcaCalendarSyncService = barcaCalendarSyncService;
     }
 
     @GetMapping("/admin")
@@ -97,4 +102,24 @@ public class AdminBookingController {
         model.addAttribute("adminEntries", bookingService.findAdminEntriesSortedByDate());
         model.addAttribute("scoreboard", bookingStatsService.findAdminScoreboard());
     }
+
+    @PostMapping("/admin/sync-barca")
+    public String syncBarcaMatches(RedirectAttributes redirectAttributes) {
+        try {
+            int createdCount = barcaCalendarSyncService.syncHomeMatches();
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Barça-kampe synkroniseret. Nye kampe oprettet: " + createdCount
+            );
+        } catch (IllegalStateException error) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    error.getMessage()
+            );
+        }
+
+        return "redirect:/admin";
+    }
+
 }

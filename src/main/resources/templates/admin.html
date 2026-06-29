@@ -24,6 +24,9 @@
   <div class="card">
     <h1>Admin</h1>
 
+    <p th:if="${successMessage}" th:text="${successMessage}" class="success"></p>
+    <p th:if="${errorMessage}" th:text="${errorMessage}" class="error"></p>
+
     <form action="/logout" method="post" class="logout-form">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
       <button type="submit">Log ud</button>
@@ -38,10 +41,14 @@
 
   <div class="card">
     <h2>Kalender</h2>
-    <label class="football-toggle">
-      <input type="checkbox" id="football-toggle" checked>
-      <span>Vis Barça-kampe ⚽️</span>
-    </label>
+    <div class="football-toggle-row">
+      <span class="football-toggle-text">Barça-kampe ⚽️</span>
+
+      <label class="football-switch">
+        <input type="checkbox" id="football-toggle" checked>
+        <span class="football-switch-slider"></span>
+      </label>
+    </div>
     <div id="calendar" data-api-url="/api/bookings/admin"></div>
   </div>
 
@@ -222,8 +229,15 @@
     <h2>Links</h2>
 
     <div class="actions">
+
       <a href="/bookings" class="button">Gå til booking-side</a>
       <a href="/" class="button">Tilbage til forsiden</a>
+      <form action="/admin/sync-barca" method="post" class="sync-barca-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="button sync-barca-button">
+          Synkroniser Barça-kampe ⚽️
+        </button>
+      </form>
       <a href="/admin/calendar.ics" class="button button-danger-soft">Download kalender</a>
       <a href="/admin/change-password" class="button button-danger-soft">Skift admin-kodeord</a>
     </div>
