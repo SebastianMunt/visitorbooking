@@ -1482,3 +1482,55 @@ td button {
         grid-column: auto;
     }
 }
+
+.booking-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(255, 248, 238, 0.72);
+    backdrop-filter: blur(8px);
+}
+
+.booking-loading-overlay.is-visible {
+    display: flex;
+}
+
+.booking-loading-box {
+    width: min(340px, 100%);
+    padding: 24px;
+    border-radius: 28px;
+    background: #ffffff;
+    text-align: center;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+}
+
+.booking-loading-box strong {
+    display: block;
+    margin-top: 14px;
+    font-size: 1.15rem;
+}
+
+.booking-loading-box p {
+    margin: 8px 0 0;
+    color: #6f6256;
+}
+
+.booking-spinner {
+    width: 46px;
+    height: 46px;
+    margin: 0 auto;
+    border: 5px solid #ead8c5;
+    border-top-color: #28a745;
+    border-radius: 50%;
+    animation: bookingSpin 0.8s linear infinite;
+}
+
+@keyframes bookingSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}

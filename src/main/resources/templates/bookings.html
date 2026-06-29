@@ -141,8 +141,7 @@
       på ankomstdato og én gang på afrejsedato.
     </p>
 
-    <form action="/bookings" method="post" th:object="${booking}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <form action="/bookings" method="post" th:object="${booking}" id="booking-form">      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
       <label for="guestName">Navn</label>
       <input
@@ -178,8 +177,17 @@
               placeholder="Fx hvem du kommer med, cirka ankomsttid eller andet"
       ></textarea>
 
-      <button type="submit">Book besøg</button>
+      <button type="submit" id="booking-submit-button">Book besøg</button>
     </form>
+
+    <div id="booking-loading-overlay" class="booking-loading-overlay">
+      <div class="booking-loading-box">
+        <div class="booking-spinner"></div>
+        <strong>Sender booking...</strong>
+        <p>Vent et øjeblik, vi gemmer bookingen og sender besked.</p>
+      </div>
+    </div>
+
   </section>
 
   <section class="card">
