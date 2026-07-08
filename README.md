@@ -21,33 +21,7 @@ Start MySQL-container:
 ```bash
 docker start visitorbooking-mysql
 
-
-Krav
-
-Installer følgende:
-
-Java 21
-Maven
-Docker Desktop
-Git
-IntelliJ IDEA eller en anden Java-editor
-
-Kontroller installationerne:
-
-java --version
-mvn --version
-docker --version
-docker compose version
-git --version
-Hent projektet
-
-Fork projektet på GitHub eller klon det direkte:
-
-git clone DIN-GITHUB-REPOSITORY-URL
-cd visitorbooking
-
-Det anbefales, at hver person opretter sit eget GitHub-repository og ændrer navn, logo, domæne og tekster.
-
+##
 Miljøvariabler
 
 Opret en fil i projektets rod:
