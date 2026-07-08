@@ -17,9 +17,10 @@ Booking-system til besøg under udveksling.
 ## Lokal kørsel med IntelliJ
 
 Start MySQL-container:
+
 docker start visitorbooking-mysql
 
-###Miljøvariabler
+### Miljøvariabler
 
 Opret en fil i projektets rod:
 
